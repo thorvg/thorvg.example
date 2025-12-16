@@ -34,3 +34,5 @@ To run an example with the GL or WGPU engine, pass 'gl' or 'wg' as a command-lin
 ./builddir/src/Shapes wg    # Runs with WebGPU
 ./builddir/src/Shapes       # Runs with Software (default)
 ```
+
+<img width="1997" height="auto" alt="image" src="https://github.com/user-attachments/assets/90df1659-2ad1-4a81-89c9-33f6cc7a467e" />
