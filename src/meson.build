@@ -51,11 +51,6 @@ source_file = [
     'ImageScaling.cpp',
     'Intersects.cpp',
     'LinearGradient.cpp',
-    'Lottie.cpp',
-    'LottieExpressions.cpp',
-    'LottieExtension.cpp',
-    'LottieInteraction.cpp',
-    'LottieTweening.cpp',
     'LumaMasking.cpp',
     'Masking.cpp',
     'MaskingMethods.cpp',
@@ -86,6 +81,20 @@ source_file = [
     'Update.cpp',
     'Viewport.cpp'
 ]
+
+thorvg_lottie = meson.get_compiler('cpp').has_header('thorvg_lottie.h')
+
+if thorvg_lottie
+    source_file += [
+        'Lottie.cpp',
+        'LottieExpressions.cpp',
+        'LottieExtension.cpp',
+        'LottieInteraction.cpp',
+        'LottieTweening.cpp'
+    ]
+else
+    message('thorvg_lottie.h not found. Skipping Lottie examples.')
+endif
 
 foreach current_file : source_file
     name = current_file.split('.')[0]
