@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    - name: Install Packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install meson ninja-build libsdl2-dev
+
+    - name: Install ThorVG
+      run: |
+        git clone https://github.com/thorvg/thorvg.git thorvg
+        cd thorvg
+        meson . build -Dloaders=all -Dsavers=gif -Dbindings=capi -Dstatic=true
+        sudo ninja -C build install
+        cd ..
+
+    - name: Build
+      run: |
+        meson setup build
+        ninja -C build
