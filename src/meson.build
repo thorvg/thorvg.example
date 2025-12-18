@@ -1,7 +1,8 @@
+cc = meson.get_compiler('cpp')
 examples_dep = [dependency('sdl2', required: true), dependency('thorvg', required: true)]
 compiler_flags = ['-DSDL_MAIN_HANDLED']
 
-#GL or GLES
+# GL or GLES
 gl_dep = dependency('gl', required: false)
 gles_dep = dependency('glesv2', required: false)
 
@@ -14,7 +15,7 @@ else
     message('Neither OpenGL nor OpenGL ES was found. Skipping GL examples.')
 endif
 
-#WebGPU
+# WebGPU
 wgpu_dep = dependency('wgpu_native', required: false)
 
 if wgpu_dep.found()
@@ -82,7 +83,14 @@ source_file = [
     'Viewport.cpp'
 ]
 
-thorvg_lottie = meson.get_compiler('cpp').has_header('thorvg_lottie.h')
+lottie_inc = []
+
+# Add homebrew For MacOS
+if host_machine.system() == 'darwin'
+    lottie_inc += include_directories('/opt/homebrew/include')
+endif
+
+thorvg_lottie = cc.has_header('thorvg_lottie.h', include_directories: lottie_inc)
 
 if thorvg_lottie
     source_file += [
@@ -103,7 +111,7 @@ foreach current_file : source_file
         cpp_args : compiler_flags)
 endforeach
 
-if meson.get_compiler('cpp').get_id() == 'msvc'
+if cc.get_id() == 'msvc'
     configure_file(input: 'all.bat', output: 'all.bat', copy: true)
 else
     configure_file(input: 'all.sh', output: 'all.sh', copy: true)
