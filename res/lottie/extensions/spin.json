@@ -48,12 +48,12 @@
                             "s": true,
                             "x": {
                                 "a": 1,
-                                "k": 450,
+                                "k": 330,
                                 "ix": 3
                             },
                             "y": {
                                 "a": 0,
-                                "k": 450,
+                                "k": 680,
                                 "ix": 4
                             }
                         },
@@ -124,7 +124,7 @@
                     "a": 0,
                     "k": [0, 0],
                     "ix": 3,
-                    "x": "var $bm_rt; wiggle = Math.sin(time * 5) * 20 + 320; $bm_rt = [((ct_xcoord - 200) * 0.75 + wiggle), (ct_ycoord + 285) * 0.75];"
+                    "x": "var $bm_rt; wiggle = Math.sin(time * 5) * 20 + 320; $bm_rt = [(ct_xcoord + wiggle), ct_ycoord];"
                 },
                 "a": {
                     "a": 0,

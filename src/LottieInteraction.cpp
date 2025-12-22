@@ -36,6 +36,7 @@ struct UserExample : tvgexam::Example
     tvg::Point origin;
     float rotation = 0.0f;
     uint32_t time = 0;
+    float scale = 1.0f;
     bool pressed = false;
 
 
@@ -93,8 +94,8 @@ struct UserExample : tvgexam::Example
     bool motion(tvg::Canvas* canvas, int32_t x, int32_t y) override
     {
         //update cursor
-        tvgexam::verify(lottie->assign("FingerCursor", 3, "ct_xcoord", float(x)));
-        tvgexam::verify(lottie->assign("FingerCursor", 3, "ct_ycoord", float(y)));
+        tvgexam::verify(lottie->assign("FingerCursor", 3, "ct_xcoord", float(x) / scale));
+        tvgexam::verify(lottie->assign("FingerCursor", 3, "ct_ycoord", float(y) / scale));
 
         if (!pressed) return false;
 
@@ -129,7 +130,7 @@ struct UserExample : tvgexam::Example
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
-        auto scale = ((w2 > h2) ? w / w2 : h / h2) * 0.8f;
+        scale = ((w2 > h2) ? w / w2 : h / h2) * 0.8f;
         picture->scale(scale);
         picture->translate(float(w) * 0.5f, float(h) * 0.5f);
 
