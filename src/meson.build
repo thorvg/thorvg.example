@@ -1,5 +1,6 @@
 cc = meson.get_compiler('cpp')
-examples_dep = [dependency('sdl2', required: true), dependency('thorvg', required: true)]
+thorvg_dep = dependency('thorvg-1', required: true)
+examples_dep = [thorvg_dep, dependency('sdl2', required: true)]
 compiler_flags = ['-DSDL_MAIN_HANDLED']
 
 # GL or GLES
@@ -83,14 +84,8 @@ source_file = [
     'Viewport.cpp'
 ]
 
-lottie_inc = []
-
-# Add homebrew For MacOS
-if host_machine.system() == 'darwin'
-    lottie_inc += include_directories('/opt/homebrew/include')
-endif
-
-thorvg_lottie = cc.has_header('thorvg_lottie.h', include_directories: lottie_inc)
+thorvg_inc = include_directories(join_paths(thorvg_dep.get_variable(pkgconfig: 'includedir'), 'thorvg-1'))
+thorvg_lottie = cc.has_header('thorvg_lottie.h', include_directories: thorvg_inc)
 
 if thorvg_lottie
     source_file += [
