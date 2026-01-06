@@ -175,7 +175,8 @@ void runGl()
 {
 #ifdef THORVG_GL_RASTER_SUPPORT
 
-#ifdef THORVG_GL_TARGET_GLES
+#ifdef TVGEXAMPLE_GLES_SUPPORTED
+        SDL_SetHint(SDL_HINT_OPENGL_ES_DRIVER, "1");
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -187,6 +188,7 @@ void runGl()
 
     auto window = SDL_CreateWindow("ThorVG Example (OpenGL)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
     auto context = SDL_GL_CreateContext(window);
+    SDL_GL_MakeCurrent(window, context);
 
     fglBindTexture = (PFNGLBINDTEXTUREEXTPROC)SDL_GL_GetProcAddress("glBindTexture");
     fglDeleteTextures = (PFNGLDELETETEXTURESEXTPROC)SDL_GL_GetProcAddress("glDeleteTextures");
@@ -208,7 +210,19 @@ void runGl()
         auto canvas = unique_ptr<tvg::GlCanvas>(tvg::GlCanvas::gen());
 
         // Pass the framebuffer id to the GlCanvas
-        tvgexam::verify(canvas->target(context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
+#if defined(TVGEXAMPLE_GLES_SUPPORTED)
+        auto eglDisplay = eglGetCurrentDisplay();
+        auto eglSurface = eglGetCurrentSurface(EGL_DRAW);
+        tvgexam::verify(canvas->target(eglDisplay, eglSurface, context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
+#elif defined(_WIN32)
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION(&wmInfo.version);
+        SDL_GetWindowWMInfo(window, &wmInfo);
+        auto hdc = GetDC(wmInfo.info.win.window);
+        tvgexam::verify(canvas->target(hdc, wmInfo.info.win.window, context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
+#else
+        tvgexam::verify(canvas->target(nullptr, nullptr, context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
+#endif
 
         content(canvas.get());
         if (tvgexam::verify(canvas->draw())) {
