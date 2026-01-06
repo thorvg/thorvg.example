@@ -81,7 +81,6 @@ source_file = [
     'TextLineWrap.cpp',
     'Transform.cpp',
     'TrimPath.cpp',
-    'Update.cpp',
     'Viewport.cpp'
 ]
 
