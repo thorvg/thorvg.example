@@ -77,6 +77,7 @@ source_file = [
     'StrokeMiterlimit.cpp',
     'Svg.cpp',
     'Text.cpp',
+    'TextEffects.cpp',
     'TextLayout.cpp',
     'TextLineWrap.cpp',
     'Transform.cpp',
