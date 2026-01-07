@@ -30,6 +30,9 @@
 #include <thorvg-1/thorvg.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
+#ifdef TVGEXAMPLE_GLES_SUPPORTED
+    #include <EGL/egl.h>
+#endif
 #ifdef _WIN32
     #include <windows.h>
     #ifndef PATH_MAX
@@ -395,8 +398,23 @@ struct GlWindow : Window
 
     void resize() override
     {
-        //Set the canvas target and draw on it.
-        verify(static_cast<tvg::GlCanvas*>(canvas)->target(context, 0, width, height, tvg::ColorSpace::ABGR8888S));
+        // Set the canvas target and draw on it.
+        SDL_GL_MakeCurrent(window, context);
+
+#if defined(TVGEXAMPLE_GLES_SUPPORTED)
+        // OpenGL ES via EGL
+        auto eglDisplay = eglGetCurrentDisplay();
+        auto eglSurface = eglGetCurrentSurface(EGL_DRAW);
+        verify(static_cast<tvg::GlCanvas*>(canvas)->target(eglDisplay, eglSurface, context, 0, width, height, tvg::ColorSpace::ABGR8888S));
+#elif defined(_WIN32)
+        SDL_SysWMinfo wmInfo;
+        SDL_VERSION(&wmInfo.version);
+        SDL_GetWindowWMInfo(window, &wmInfo);
+        auto hdc = GetDC(wmInfo.info.win.window);
+        verify(static_cast<tvg::GlCanvas*>(canvas)->target(hdc, wmInfo.info.win.window, context, 0, width, height, tvg::ColorSpace::ABGR8888S));
+#else
+        verify(static_cast<tvg::GlCanvas*>(canvas)->target(nullptr, nullptr, context, 0, width, height, tvg::ColorSpace::ABGR8888S));
+#endif
     }
 
     void refresh() override
