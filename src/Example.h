@@ -395,8 +395,9 @@ struct GlWindow : Window
 
     void resize() override
     {
-        //Set the canvas target and draw on it.
-        verify(static_cast<tvg::GlCanvas*>(canvas)->target(context, 0, width, height, tvg::ColorSpace::ABGR8888S));
+        // Set the canvas target and draw on it.
+        // TODO: When using SDL3, EGLDisplay and EGLSurface may need to be passed as arguments to target().
+        verify(static_cast<tvg::GlCanvas*>(canvas)->target(nullptr, nullptr, context, 0, width, height, tvg::ColorSpace::ABGR8888S));
     }
 
     void refresh() override
