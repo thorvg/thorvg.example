@@ -66,12 +66,13 @@ void mainloop()
         //SDL Event handling
         while (SDL_PollEvent(&event)) {
             switch (event.type) {
-                case SDL_QUIT: {
+                case SDL_EVENT_QUIT: {
                     running = false;
                     break;
                 }
-                case SDL_KEYUP: {
-                    if (event.key.keysym.sym == SDLK_ESCAPE) {
+                case SDL_EVENT_KEY_UP: {
+
+                  if (event.key.key == SDLK_ESCAPE) {
                         running = false;
                     }
                     break;
@@ -88,7 +89,7 @@ void mainloop()
 
 void runSw()
 {
-    auto window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
+    auto window = SDL_CreateWindow("ThorVG Example (Software)", WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
     auto surface = SDL_GetWindowSurface(window);
 
     for (int counter = 0; counter < NUM_PER_LINE * NUM_PER_LINE; ++counter) {
