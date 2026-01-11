@@ -1,0 +1,5 @@
+option('gl_backend',
+  type: 'combo',
+  choices: ['gl', 'gles'],
+  value: 'gl',
+  description: 'Select GL backend for examples (gl, gles)')
