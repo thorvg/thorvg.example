@@ -27,9 +27,8 @@
 #include <iostream>
 #include <cstring>
 #include <chrono>
-#include <thorvg-1/thorvg.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_syswm.h>
+#include <thorvg.h>
+#include <SDL3/SDL.h>
 #ifdef _WIN32
     #include <windows.h>
     #ifndef PATH_MAX
@@ -251,35 +250,33 @@ struct Window
             //SDL Event handling
             while (SDL_PollEvent(&event)) {
                 switch (event.type) {
-                    case SDL_QUIT: {
+                    case SDL_EVENT_QUIT: {
                         running = false;
                         break;
                     }
-                    case SDL_KEYUP: {
-                        if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    case SDL_EVENT_KEY_UP: {
+                        if (event.key.key == SDLK_ESCAPE) {
                             running = false;
                         }
                         break;
                     }
-                    case SDL_MOUSEBUTTONDOWN: {
+                    case SDL_EVENT_MOUSE_BUTTON_DOWN: {
                         needDraw |= example->clickdown(canvas, event.button.x, event.button.y);
                         break;
                     }
-                    case SDL_MOUSEBUTTONUP: {
+                    case SDL_EVENT_MOUSE_BUTTON_UP: {
                         needDraw |= example->clickup(canvas, event.button.x, event.button.y);
                         break;
                     }
-                    case SDL_MOUSEMOTION: {
+                    case SDL_EVENT_MOUSE_MOTION: {
                         needDraw |= example->motion(canvas, event.button.x, event.button.y);
                         break;
                     }
-                    case SDL_WINDOWEVENT: {
-                        if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                            width = event.window.data1;
-                            height = event.window.data2;
-                            needResize = true;
-                            needDraw = true;
-                        }
+                    case SDL_EVENT_WINDOW_RESIZED: {
+                        width = event.window.data1;
+                        height = event.window.data2;
+                        needResize = true;
+                        needDraw = true;
                     }
                 }
             }
@@ -322,7 +319,7 @@ struct SwWindow : Window
     {
         if (!initialized) return;
 
-        window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("ThorVG Example (Software)", width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
 
         //Create a Canvas. Use Smart Rendering by default.
         canvas = tvg::SwCanvas::gen();
@@ -371,7 +368,7 @@ struct GlWindow : Window
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 #endif
-        window = SDL_CreateWindow("ThorVG Example (OpenGL/ES)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("ThorVG Example (OpenGL/ES)", width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
         context = SDL_GL_CreateContext(window);
 
         //Create a Canvas
@@ -390,7 +387,7 @@ struct GlWindow : Window
         delete(canvas);
         canvas = nullptr;
 
-        SDL_GL_DeleteContext(context);
+        SDL_GL_DestroyContext(context);
     }
 
     void resize() override
@@ -423,7 +420,7 @@ struct WgWindow : Window
     {
         if (!initialized) return;
 
-        window = SDL_CreateWindow("ThorVG Example (WebGPU)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN);
+        window = SDL_CreateWindow("ThorVG Example (WebGPU)", width, height, SDL_WINDOW_HIDDEN);
 
         //Here we create our WebGPU surface from the window!
         SDL_SysWMinfo windowWMInfo;

@@ -1,7 +1,7 @@
 cc = meson.get_compiler('cpp')
 thorvg_dep = dependency('thorvg-1', required: true)
-examples_dep = [thorvg_dep, dependency('sdl2', required: true)]
-compiler_flags = ['-DSDL_MAIN_HANDLED']
+examples_dep = [thorvg_dep, dependency('sdl3', required: true)]
+compiler_flags = []
 
 # GL or GLES
 gl_dep = dependency('gl', required: false)
