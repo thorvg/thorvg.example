@@ -22,7 +22,7 @@
 
 #include "Example.h"
 
-#ifdef THORVG_GL_RASTER_SUPPORT
+#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
     #include <SDL2/SDL_opengl.h>
 #endif
 
@@ -117,7 +117,7 @@ void runSw()
 /* GL Engine Specific Setup                                             */
 /************************************************************************/
 
-#ifdef THORVG_GL_RASTER_SUPPORT
+#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
 
 typedef void (*PFNGLTEXIMAGE2DPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid* pixels);
 typedef void (*PFNGLTEXPARAMETERIPROC)(GLenum target, GLenum pname, GLint param);
@@ -173,7 +173,7 @@ struct GLFrameBuffer
 
 void runGl()
 {
-#ifdef THORVG_GL_RASTER_SUPPORT
+#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
 
 #ifdef THORVG_GL_TARGET_GLES
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
@@ -207,8 +207,8 @@ void runGl()
     for (int counter = 0; counter < NUM_PER_LINE * NUM_PER_LINE; ++counter) {
         auto canvas = unique_ptr<tvg::GlCanvas>(tvg::GlCanvas::gen());
 
-        // Pass the framebuffer id to the GlCanvas
-        tvgexam::verify(canvas->target(context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
+        // TODO: When using SDL3, EGLDisplay and EGLSurface may need to be passed as arguments to target().
+        tvgexam::verify(canvas->target(nullptr, nullptr, context, glFbo.fbo, SIZE, SIZE, tvg::ColorSpace::ABGR8888S));
 
         content(canvas.get());
         if (tvgexam::verify(canvas->draw())) {
