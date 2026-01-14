@@ -242,7 +242,7 @@ bool runGl()
 /* WG Engine Specific Setup                                             */
 /************************************************************************/
 
-#ifdef THORVG_WG_RASTER_SUPPORT
+#ifdef TVGEXAMPLE_WGPU_SUPPORTED
 void wgCopyTextureToTexture(WGPUDevice device, WGPUTexture src, WGPUTexture dst, uint32_t posX, uint32_t posY, uint32_t width, uint32_t height) {
     WGPUQueue queue = wgpuDeviceGetQueue(device);
 
@@ -269,8 +269,7 @@ void wgCopyTextureToTexture(WGPUDevice device, WGPUTexture src, WGPUTexture dst,
 
 bool runWg()
 {
-#ifdef THORVG_WG_RASTER_SUPPORT
-    //TODO with Drawing Target?
+#ifdef TVGEXAMPLE_WGPU_SUPPORTED
     auto window = SDL_CreateWindow("ThorVG Example (WebGPU)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
 
     //Here we create our WebGPU surface from the window!
@@ -415,7 +414,6 @@ int main(int argc, char **argv)
 
         SDL_Quit();
 
-        //Terminate ThorVG Engine
         tvg::Initializer::term();
     }
 
