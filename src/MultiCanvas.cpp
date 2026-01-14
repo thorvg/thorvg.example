@@ -20,11 +20,8 @@
  * SOFTWARE.
  */
 
+#include <SDL2/SDL_opengl.h>
 #include "Example.h"
-
-#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
-    #include <SDL2/SDL_opengl.h>
-#endif
 
 #define WIDTH 1024
 #define HEIGHT 1024
@@ -86,7 +83,7 @@ void mainloop()
 /* SW Engine Specific Setup                                             */
 /************************************************************************/
 
-void runSw()
+bool runSw()
 {
     auto window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
     auto surface = SDL_GetWindowSurface(window);
@@ -110,14 +107,14 @@ void runSw()
     mainloop();
 
     SDL_DestroyWindow(window);
+
+    return true;
 }
 
 
 /************************************************************************/
 /* GL Engine Specific Setup                                             */
 /************************************************************************/
-
-#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
 
 typedef void (*PFNGLTEXIMAGE2DPROC)(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid* pixels);
 typedef void (*PFNGLTEXPARAMETERIPROC)(GLenum target, GLenum pname, GLint param);
@@ -169,13 +166,10 @@ struct GLFrameBuffer
         fglBlitFramebuffer(0, 0, width, height, posX, posY, posX +width, posY + height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     }
 };
-#endif
 
-void runGl()
+bool runGl()
 {
-#if defined(TVGEXAMPLE_GL_SUPPORTED) || defined(TVGEXAMPLE_GLES_SUPPORTED)
-
-#ifdef THORVG_GL_TARGET_GLES
+#if defined(TVGEXAMPLE_GLES_SUPPORTED)
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -185,19 +179,27 @@ void runGl()
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 #endif
 
-    auto window = SDL_CreateWindow("ThorVG Example (OpenGL)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
-    auto context = SDL_GL_CreateContext(window);
+    auto failGl = []() -> bool
+    {
+        cout << "Not Support OpenGL/ES" << endl;
+        return false;
+    };
 
-    fglBindTexture = (PFNGLBINDTEXTUREEXTPROC)SDL_GL_GetProcAddress("glBindTexture");
-    fglDeleteTextures = (PFNGLDELETETEXTURESEXTPROC)SDL_GL_GetProcAddress("glDeleteTextures");
-    fglGenTextures = (PFNGLGENTEXTURESEXTPROC)SDL_GL_GetProcAddress("glGenTextures");
-    fglTexImage2D = (PFNGLTEXIMAGE2DPROC)SDL_GL_GetProcAddress("glTexImage2D");
-    fglTexParameteri = (PFNGLTEXPARAMETERIPROC)SDL_GL_GetProcAddress("glTexParameteri");
-    fglBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBindFramebuffer");
-    fglGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glGenFramebuffers");
-    fglDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteFramebuffers");
-    fglFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)SDL_GL_GetProcAddress("glFramebufferTexture2D");
-    fglBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBlitFramebuffer");
+    auto window = SDL_CreateWindow("ThorVG Example (OpenGL)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+    if (!window) return failGl();
+    auto context = SDL_GL_CreateContext(window);
+    if (!context) return failGl();
+
+    if (!(fglBindTexture = (PFNGLBINDTEXTUREEXTPROC)SDL_GL_GetProcAddress("glBindTexture"))) return failGl();
+    if (!(fglDeleteTextures = (PFNGLDELETETEXTURESEXTPROC)SDL_GL_GetProcAddress("glDeleteTextures"))) return failGl();
+    if (!(fglGenTextures = (PFNGLGENTEXTURESEXTPROC)SDL_GL_GetProcAddress("glGenTextures"))) return failGl();
+    if (!(fglTexImage2D = (PFNGLTEXIMAGE2DPROC)SDL_GL_GetProcAddress("glTexImage2D"))) return failGl();
+    if (!(fglTexParameteri = (PFNGLTEXPARAMETERIPROC)SDL_GL_GetProcAddress("glTexParameteri"))) return failGl();
+    if (!(fglBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBindFramebuffer"))) return failGl();
+    if (!(fglGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glGenFramebuffers"))) return failGl();
+    if (!(fglDeleteFramebuffers = (PFNGLDELETEFRAMEBUFFERSPROC)SDL_GL_GetProcAddress("glDeleteFramebuffers"))) return failGl();
+    if (!(fglFramebufferTexture2D = (PFNGLFRAMEBUFFERTEXTURE2DPROC)SDL_GL_GetProcAddress("glFramebufferTexture2D"))) return failGl();
+    if (!(fglBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC)SDL_GL_GetProcAddress("glBlitFramebuffer"))) return failGl();
 
     // Create the framebuffer which the GlCanvas can render to
     // Since the example is just a simple demo, and only run the rendering function once
@@ -231,9 +233,8 @@ void runGl()
 
     SDL_GL_DeleteContext(context);
     SDL_DestroyWindow(window);
-#else
-    cout << "Not Support OpenGL" << endl;
-#endif
+
+    return true;
 }
 
 
@@ -266,7 +267,7 @@ void wgCopyTextureToTexture(WGPUDevice device, WGPUTexture src, WGPUTexture dst,
 }
 #endif
 
-void runWg()
+bool runWg()
 {
 #ifdef THORVG_WG_RASTER_SUPPORT
     //TODO with Drawing Target?
@@ -383,8 +384,11 @@ void runWg()
     wgpuSurfaceRelease(surface);
     wgpuInstanceRelease(instance);
     SDL_DestroyWindow(window);
+
+    return true;
 #else
     cout << "Not Support WebGPU" << endl;
+    return false;
 #endif
 }
 
