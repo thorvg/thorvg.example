@@ -40,18 +40,15 @@ struct UserExample : tvgexam::Example
         bg->fill(255, 255, 255);
         canvas->push(bg);
 
-        float pw, ph;
-
         //Prepare a scene for post effects
         {
             scene1 = tvg::Scene::gen();
 
             auto picture = tvg::Picture::gen();
-            picture->load(EXAMPLE_DIR"/svg/LottieFiles_logo.svg");
-
-            picture->size(&pw, &ph);
-            picture->size(pw * 0.5f, ph * 0.5f);
-            picture->translate(pw * 0.175f, 0.0f);
+            picture->load(EXAMPLE_DIR"/svg/thorvg-logo-clear.svg");
+            picture->scale(0.5f);
+            picture->origin(0.5f, 0.0f);
+            picture->translate(float(w / 2), 0.0f);
 
             scene1->push(picture);
             canvas->push(scene1);
@@ -63,10 +60,9 @@ struct UserExample : tvgexam::Example
 
             auto picture = tvg::Picture::gen();
             picture->load(EXAMPLE_DIR"/svg/152932619-bd3d6921-72df-4f09-856b-f9743ae32a14.svg");
-
-            picture->size(&pw, &ph);
-            picture->translate(pw * 0.45f, ph * 0.45f);
-            picture->size(pw * 0.75f, ph * 0.75f);
+            picture->scale(0.6f);
+            picture->origin(0.5f, 0.0f);
+            picture->translate(float(w / 2), 250.0f);
 
             scene2->push(picture);
             canvas->push(scene2);
@@ -78,10 +74,9 @@ struct UserExample : tvgexam::Example
 
             auto picture = tvg::Picture::gen();
             picture->load(EXAMPLE_DIR"/svg//circles1.svg");
-
-            picture->size(&pw, &ph);
-            picture->translate(w * 0.3f, h * 0.65f);
-            picture->size(pw * 0.75f, ph * 0.75f);
+            picture->scale(0.7f);
+            picture->origin(0.5f, 0.0f);
+            picture->translate(float(w / 2), 550.0f);
 
             scene3->push(picture);
             canvas->push(scene3);
