@@ -3,6 +3,8 @@
 [![Discord](https://img.shields.io/badge/Community-5865f2?style=flat&logo=discord&logoColor=white)](https://discord.gg/n25xj6J6HM)
 [![OpenCollective](https://img.shields.io/badge/OpenCollective-84B5FC?style=flat&logo=opencollective&logoColor=white)](https://opencollective.com/thorvg)
 <br>
+[![Build](https://github.com/thorvg/thorvg.example/actions/workflows/build_test.yml/badge.svg?branch=main&event=push)](https://github.com/thorvg/thorvg.example/actions/workflows/build_test.yml)
+
 
 # ThorVG Example
 <p align="center">
