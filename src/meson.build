@@ -86,9 +86,16 @@ source_file = [
 ]
 
 thorvg_inc = include_directories(join_paths(thorvg_dep.get_variable(pkgconfig: 'includedir'), 'thorvg-1'))
-thorvg_lottie = cc.has_header('thorvg_lottie.h', include_directories: thorvg_inc)
 
-if thorvg_lottie
+# Lottie Examples
+lottie_example = '''
+    #include <thorvg_lottie.h>
+    int main(int argc, char **argv) {
+        return tvg::LottieAnimation::gen() ? 0 : 1;
+    }
+'''
+
+if cc.links(lottie_example, dependencies : thorvg_dep, include_directories : thorvg_inc)
     source_file += [
         'Lottie.cpp',
         'LottieExpressions.cpp',
@@ -96,8 +103,17 @@ if thorvg_lottie
         'LottieInteraction.cpp',
         'LottieTweening.cpp'
     ]
+    message('ThorVG Lottie found. Enabled Lottie examples.')
 else
-    message('thorvg_lottie.h not found. Skipping Lottie examples.')
+    message('ThorVG Lottie not found. Skipping Lottie examples.')
+endif
+
+# CAPI Examples
+if cc.has_function('tvg_shape_new', prefix: '#include <thorvg_capi.h>', include_directories: thorvg_inc, dependencies: thorvg_dep)
+    source_file += ['Capi.cpp']
+    message('ThorVG CAPI found. Enabled Capi examples.')
+else
+    message('ThorVG CAPI not found. Skipping Capi examples.')
 endif
 
 foreach current_file : source_file
