@@ -38,7 +38,7 @@ void content(tvg::Canvas* canvas)
     auto bg = tvg::Shape::gen();
     bg->appendRect(0, 0, SIZE, SIZE);
     bg->fill(255, 255, 255);
-    canvas->push(bg);
+    canvas->add(bg);
 
     auto picture = tvg::Picture::gen();
     picture->origin(0.5f, 0.5f);
@@ -50,7 +50,7 @@ void content(tvg::Canvas* canvas)
     picture->scale(scale);
     picture->translate(SIZE * 0.5f, SIZE * 0.5f);
 
-    canvas->push(picture);
+    canvas->add(picture);
 }
 
 

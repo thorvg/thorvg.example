@@ -59,7 +59,7 @@ struct UserExample : tvgexam::Example
 
             shape->scale(1.25f);
 
-            canvas->push(shape);
+            canvas->add(shape);
         }
 
         //clipped, rotated image
@@ -74,7 +74,7 @@ struct UserExample : tvgexam::Example
             clip->appendCircle(900, 350, 200, 200);
             picture->clip(clip);
 
-            canvas->push(picture);
+            canvas->add(picture);
         }
 
         //normal text
@@ -87,7 +87,7 @@ struct UserExample : tvgexam::Example
             text->translate(25, 800);
             text->fill(255, 255, 255);
 
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //vector scene
@@ -97,7 +97,7 @@ struct UserExample : tvgexam::Example
             tiger->translate(700, 640);
             tiger->scale(0.5f);
 
-            canvas->push(tiger);
+            canvas->add(tiger);
         }
 
         //marquee
@@ -107,7 +107,7 @@ struct UserExample : tvgexam::Example
             marquee->strokeWidth(2);
             marquee->strokeFill(255, 255, 0);
             marquee->fill(255, 255, 0, 50);
-            canvas->push(marquee);
+            canvas->add(marquee);
         }
 
         return true;

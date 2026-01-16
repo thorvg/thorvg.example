@@ -49,7 +49,7 @@ struct UserExample : tvgexam::Example
         auto shape = tvg::Shape::gen();
         shape->appendRect(0, 0, w, h);
         shape->fill(255, 255, 255);
-        canvas->push(shape);
+        canvas->add(shape);
 
         {
             auto scene = tvg::Scene::gen();
@@ -85,13 +85,13 @@ struct UserExample : tvgexam::Example
             clip->appendCircle(200, 230, 130, 130);
             clip->translate(10, 10);
 
-            scene->push(star1);
-            scene->push(star2);
+            scene->add(star1);
+            scene->add(star2);
 
             //Clipping scene to shape
             scene->clip(clip);
 
-            canvas->push(scene);
+            canvas->add(scene);
         }
 
         {
@@ -119,7 +119,7 @@ struct UserExample : tvgexam::Example
             //Clipping scene to rect(shape)
             star3->clip(clipRect);
 
-            canvas->push(star3);
+            canvas->add(star3);
         }
 
         {
@@ -138,7 +138,7 @@ struct UserExample : tvgexam::Example
             //Clipping picture to path
             picture->clip(clipPath);
 
-            canvas->push(picture);
+            canvas->add(picture);
         }
 
         {
@@ -154,7 +154,7 @@ struct UserExample : tvgexam::Example
             //Clipping shape1 to clipShape
             shape1->clip(clipShape);
 
-            canvas->push(shape1);
+            canvas->add(shape1);
         }
 
         return true;

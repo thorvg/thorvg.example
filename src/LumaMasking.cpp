@@ -56,7 +56,7 @@ struct UserExample : tvgexam::Example
 
             mask->mask(nMask, tvg::MaskMethod::Luma);
             shape->mask(mask, tvg::MaskMethod::Luma);
-            canvas->push(shape);
+            canvas->add(shape);
 
             //SVG
             auto svg = tvg::Picture::gen();
@@ -71,7 +71,7 @@ struct UserExample : tvgexam::Example
             mask2->appendRect(150, 500, 200, 200, 30, 30);
             mask2->fill(255, 255, 255);
             svg->mask(mask2, tvg::MaskMethod::Luma);
-            canvas->push(svg);
+            canvas->add(svg);
 
             //Star
             auto star = tvg::Shape::gen();
@@ -95,7 +95,7 @@ struct UserExample : tvgexam::Example
             mask3->appendCircle(600, 200, 125, 125);
             mask3->fill(0, 255, 255);
             star->mask(mask3, tvg::MaskMethod::Luma);
-            canvas->push(star);
+            canvas->add(star);
 
             auto image = tvg::Picture::gen();
             if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
@@ -109,10 +109,10 @@ struct UserExample : tvgexam::Example
             auto mask4_circle = tvg::Shape::gen();
             mask4_circle->appendCircle(600, 550, 125, 125);
             mask4_circle->fill(128, 0, 128);
-            mask4->push(mask4_rect);
-            mask4->push(mask4_circle);
+            mask4->add(mask4_rect);
+            mask4->add(mask4_circle);
             image->mask(mask4, tvg::MaskMethod::Luma);
-            canvas->push(image);
+            canvas->add(image);
         }
 
         //Inverse Luma Masking
@@ -134,7 +134,7 @@ struct UserExample : tvgexam::Example
 
             mask->mask(nMask, tvg::MaskMethod::InvLuma);
             shape->mask(mask, tvg::MaskMethod::InvLuma);
-            canvas->push(shape);
+            canvas->add(shape);
 
             //SVG
             auto svg = tvg::Picture::gen();
@@ -149,7 +149,7 @@ struct UserExample : tvgexam::Example
             mask2->appendRect(950, 500, 200, 200, 30, 30);
             mask2->fill(255, 255, 255);
             svg->mask(mask2, tvg::MaskMethod::InvLuma);
-            canvas->push(svg);
+            canvas->add(svg);
 
             //Star
             auto star = tvg::Shape::gen();
@@ -173,7 +173,7 @@ struct UserExample : tvgexam::Example
             mask3->appendCircle(1400, 200, 125, 125);
             mask3->fill(0, 255, 255);
             star->mask(mask3, tvg::MaskMethod::InvLuma);
-            canvas->push(star);
+            canvas->add(star);
 
             auto image = tvg::Picture::gen();
             if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
@@ -187,10 +187,10 @@ struct UserExample : tvgexam::Example
             auto mask4_circle = tvg::Shape::gen();
             mask4_circle->appendCircle(1400, 550, 125, 125);
             mask4_circle->fill(128, 0, 128);
-            mask4->push(mask4_rect);
-            mask4->push(mask4_circle);
+            mask4->add(mask4_rect);
+            mask4->add(mask4_circle);
             image->mask(mask4, tvg::MaskMethod::InvLuma);
-            canvas->push(image);
+            canvas->add(image);
         }
 
         free(data);

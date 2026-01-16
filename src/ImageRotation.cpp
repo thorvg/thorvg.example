@@ -45,7 +45,7 @@ struct UserExample : tvgexam::Example
 
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/image/scale.jpg"))) return false;
 
-        canvas->push(picture);
+        canvas->add(picture);
 
         return true;
     }

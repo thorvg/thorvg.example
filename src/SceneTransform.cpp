@@ -48,19 +48,19 @@ struct UserExample : tvgexam::Example
         shape1->fill(0, 255, 0);                           //r, g, b
         shape1->strokeWidth(5);                            //width
         shape1->strokeFill(255, 255, 255);                 //r, g, b
-        scene->push(shape1);
+        scene->add(shape1);
 
         //Prepare Circle (Scene1)
         auto shape2 = tvg::Shape::gen();
         shape2->appendCircle(-165, -150, 200, 200);    //cx, cy, radiusW, radiusH
         shape2->fill(255, 255, 0);                     //r, g, b
-        scene->push(shape2);
+        scene->add(shape2);
 
         //Prepare Ellipse (Scene1)
         auto shape3 = tvg::Shape::gen();
         shape3->appendCircle(265, 250, 150, 100);      //cx, cy, radiusW, radiusH
         shape3->fill(0, 255, 255);                     //r, g, b
-        scene->push(shape3);
+        scene->add(shape3);
 
         scene->translate(430, 430);
         scene->scale(0.7f);
@@ -87,7 +87,7 @@ struct UserExample : tvgexam::Example
         shape4->fill(0, 0, 255, 127);
         shape4->strokeWidth(3);                        //width
         shape4->strokeFill(0, 0, 255);                 //r, g, b
-        scene2->push(shape4);
+        scene2->add(shape4);
 
         //Circle (Scene2)
         auto shape5 = tvg::Shape::gen();
@@ -105,16 +105,16 @@ struct UserExample : tvgexam::Example
         shape5->cubicTo(cx - radius, cy - halfRadius, cx - halfRadius, cy - radius, cx, cy - radius);
         shape5->close();
         shape5->fill(255, 0, 0, 127);
-        scene2->push(shape5);
+        scene2->add(shape5);
 
         scene2->translate(500, 350);
         scene2->rotate(360 * progress);
 
-        //Push scene2 onto the scene
-        scene->push(scene2);
+        //Add scene2 to the scene
+        scene->add(scene2);
 
-        //Draw the Scene onto the Canvas
-        canvas->push(scene);
+        //Add the Scene to the Canvas
+        canvas->add(scene);
 
         return true;
     }

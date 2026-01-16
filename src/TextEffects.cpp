@@ -45,7 +45,7 @@ struct UserExample : tvgexam::Example
         auto shape = tvg::Shape::gen();
         shape->appendRect(0, 0, 600, 600);
         shape->fill(50, 50, 50);
-        canvas->push(shape);
+        canvas->add(shape);
 
         // Rainbow effect on title
         float r = std::sin(time) * 127 + 128;
@@ -62,7 +62,7 @@ struct UserExample : tvgexam::Example
         float x, y, w, h;
         animTitle->bounds(&x, &y, &w, &h);
         animTitle->translate(300 - w * 0.5f, 150 - h * 0.5f);
-        canvas->push(animTitle);
+        canvas->add(animTitle);
 
         // Pulsing subtitle
         float scale = 1 + std::sin(time * 2) * 0.1f;
@@ -74,7 +74,7 @@ struct UserExample : tvgexam::Example
 
         animSubtitle->bounds(&x, &y, &w, &h);
         animSubtitle->translate(300 - w * 0.5f, 220 - h * 0.5f);
-        canvas->push(animSubtitle);
+        canvas->add(animSubtitle);
 
         // Rotating text
         auto rotatingText = tvg::Text::gen();
@@ -101,7 +101,7 @@ struct UserExample : tvgexam::Example
 
         tvg::Matrix m = {cosVal, -sinVal, tx, sinVal, cosVal, ty, 0, 0, 1};
         rotatingText->transform(m);
-        canvas->push(rotatingText);
+        canvas->add(rotatingText);
 
         // Wave effect text
         size_t waveLen = strlen(waveText);
@@ -118,7 +118,7 @@ struct UserExample : tvgexam::Example
 
             charText->bounds(&x, &y, &w, &h);
             charText->translate(150 + i * 30 - w * 0.5f, 400 + yOffset - h * 0.5f);
-            canvas->push(charText);
+            canvas->add(charText);
         }
 
         canvas->update();

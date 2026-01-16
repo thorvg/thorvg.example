@@ -50,7 +50,7 @@ struct UserExample : tvgexam::Example
         shape->scale(1.0f - 0.75f * progress);
         shape->rotate(360 * progress);
 
-        canvas->push(shape);
+        canvas->add(shape);
 
         //Shape2
         auto shape2 = tvg::Shape::gen();
@@ -59,7 +59,7 @@ struct UserExample : tvgexam::Example
         shape2->translate(480, 480);
         shape2->rotate(360 * progress);
         shape2->translate(400 + progress * 300, 400);
-        canvas->push(shape2);
+        canvas->add(shape2);
 
         //Shape3
         auto shape3 = tvg::Shape::gen();
@@ -71,7 +71,7 @@ struct UserExample : tvgexam::Example
         shape3->translate(560, 560);
         shape3->rotate(-360.0f * progress);
         shape3->scale(0.5f + progress);
-        canvas->push(shape3);
+        canvas->add(shape3);
 
         return true;
     }

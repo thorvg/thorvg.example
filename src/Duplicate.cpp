@@ -64,9 +64,9 @@ struct UserExample : tvgexam::Example
             auto shape3 = shape2->duplicate();
             shape3->translate(0, 440);
 
-            canvas->push(shape1);
-            canvas->push(shape2);
-            canvas->push(shape3);
+            canvas->add(shape1);
+            canvas->add(shape2);
+            canvas->add(shape3);
         }
 
         //Duplicate Scene
@@ -77,17 +77,17 @@ struct UserExample : tvgexam::Example
             auto shape1 = tvg::Shape::gen();
             shape1->appendRect(0, 0, 400, 400, 50, 50);
             shape1->fill(0, 255, 0);
-            scene1->push(shape1);
+            scene1->add(shape1);
 
             auto shape2 = tvg::Shape::gen();
             shape2->appendCircle(400, 400, 200, 200);
             shape2->fill(255, 255, 0);
-            scene1->push(shape2);
+            scene1->add(shape2);
 
             auto shape3 = tvg::Shape::gen();
             shape3->appendCircle(600, 600, 150, 100);
             shape3->fill(0, 255, 255);
-            scene1->push(shape3);
+            scene1->add(shape3);
 
             scene1->scale(0.25);
             scene1->translate(400, 0);
@@ -96,8 +96,8 @@ struct UserExample : tvgexam::Example
             auto scene2 = scene1->duplicate();
             scene2->translate(600, 0);
 
-            canvas->push(scene1);
-            canvas->push(scene2);
+            canvas->add(scene1);
+            canvas->add(scene2);
         }
 
         //Duplicate Picture - svg
@@ -110,8 +110,8 @@ struct UserExample : tvgexam::Example
             auto picture2 = picture1->duplicate();
             picture2->translate(550, 250);
 
-            canvas->push(picture1);
-            canvas->push(picture2);
+            canvas->add(picture1);
+            canvas->add(picture2);
         }
 
         //Duplicate Picture - raw
@@ -133,8 +133,8 @@ struct UserExample : tvgexam::Example
             picture2->scale(0.7);
             picture2->rotate(8);
 
-            canvas->push(picture1);
-            canvas->push(picture2);
+            canvas->add(picture1);
+            canvas->add(picture2);
 
             free(data);
         }
@@ -152,8 +152,8 @@ struct UserExample : tvgexam::Example
             auto text2 = text->duplicate();
             text2->translate(0, 700);
 
-            canvas->push(text);
-            canvas->push(text2);
+            canvas->add(text);
+            canvas->add(text2);
         }
 
         return true;

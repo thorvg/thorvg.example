@@ -38,13 +38,13 @@ struct UserExample : tvgexam::Example
         txt->size(12);
         txt->text(title);
         txt->fill(200, 200, 200);
-        canvas->push(txt);
+        canvas->add(txt);
 
         auto lines = tvg::Shape::gen();
         lines->strokeFill(100, 100, 100);
         lines->strokeWidth(1);
         lines->appendRect(x, y + 30.0f, size.x, size.y);
-        canvas->push(lines);
+        canvas->add(lines);
     }
 
     void text(tvg::Canvas* canvas, const char* content, const tvg::Point& pos, const tvg::Point& align, tvg::TextWrap wrapMode)
@@ -58,7 +58,7 @@ struct UserExample : tvgexam::Example
         txt->align(align.x, align.y);
         txt->wrap(wrapMode);
         txt->fill(255, 255, 255);
-        canvas->push(txt);
+        canvas->add(txt);
     }
 
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override

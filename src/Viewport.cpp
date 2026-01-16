@@ -47,7 +47,7 @@ struct UserExample : tvgexam::Example
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/svg/tiger.svg"))) return false;
         picture->size(w, h);
         picture->mask(mask, tvg::MaskMethod::Alpha);
-        canvas->push(picture);
+        canvas->add(picture);
 
         this->w = w;
         this->h = h;

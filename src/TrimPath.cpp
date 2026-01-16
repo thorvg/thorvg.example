@@ -52,8 +52,8 @@ struct UserExample : tvgexam::Example
         shape2->strokeDash(dashPatterns, 2, 10);
         shape2->trimpath(0.25f, 0.75f, true);
 
-        canvas->push(shape1);
-        canvas->push(shape2);
+        canvas->add(shape1);
+        canvas->add(shape2);
 
         return true;
     }

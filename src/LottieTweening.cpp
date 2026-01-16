@@ -123,7 +123,7 @@ struct UserExample : tvgexam::Example
         shape->appendRect(0, 0, w, h);
         shape->fill(50, 50, 50);
 
-        canvas->push(shape);
+        canvas->add(shape);
 
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/emoji.json"))) return false;
 
@@ -135,7 +135,7 @@ struct UserExample : tvgexam::Example
         picture->translate(float(w) * 0.5f, float(h) * 0.5f);
 
 
-        canvas->push(picture);
+        canvas->add(picture);
 
         init();
 

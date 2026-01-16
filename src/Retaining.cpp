@@ -36,19 +36,19 @@ struct UserExample : tvgexam::Example
         auto shape1 = tvg::Shape::gen();
         shape1->appendRect(0, 0, 480, 480, 50, 50);  //x, y, w, h, rx, ry
         shape1->fill(0, 255, 0);                     //r, g, b
-        canvas->push(shape1);
+        canvas->add(shape1);
 
         //Prepare Round Rectangle2
         auto shape2 = tvg::Shape::gen();
         shape2->appendRect(140, 140, 480, 480, 50, 50);  //x, y, w, h, rx, ry
         shape2->fill(255, 255, 0);                       //r, g, b
-        canvas->push(shape2);
+        canvas->add(shape2);
 
         //Prepare Round Rectangle3
         auto shape3 = tvg::Shape::gen();
         shape3->appendRect(280, 280, 480, 480, 50, 50);  //x, y, w, h, rx, ry
         shape3->fill(0, 255, 255);                       //r, g, b
-        canvas->push(shape3);
+        canvas->add(shape3);
 
         //Prepare Scene
         auto scene = tvg::Scene::gen();
@@ -58,16 +58,16 @@ struct UserExample : tvgexam::Example
         shape4->fill(255, 0, 0);
         shape4->strokeWidth(5);
         shape4->strokeFill(255, 255, 255);
-        scene->push(shape4);
+        scene->add(shape4);
 
         auto shape5 = tvg::Shape::gen();
         shape5->appendCircle(630, 630, 190, 190);
         shape5->fill(255, 0, 255);
         shape5->strokeWidth(5);
         shape5->strokeFill(255, 255, 255);
-        scene->push(shape5);
+        scene->add(shape5);
 
-        canvas->push(scene);
+        canvas->add(scene);
 
         return true;
     }
@@ -84,9 +84,9 @@ struct UserExample : tvgexam::Example
         //Prevent deleting from canvas->remove()
         paint->ref();
 
-        //Re-push the front paint to the end of the root scene
+        //Add again the front paint to the end of the root scene
         tvgexam::verify(canvas->remove(paint));
-        tvgexam::verify(canvas->push(paint));
+        tvgexam::verify(canvas->add(paint));
 
         //Make it pair ref() - unref()
         paint->unref();

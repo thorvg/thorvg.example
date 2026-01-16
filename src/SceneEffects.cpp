@@ -46,8 +46,8 @@ struct UserExample : tvgexam::Example
             picture->size(SIZE, SIZE);
             picture->translate(SIZE * i, 0);
 
-            blur[i]->push(picture);
-            canvas->push(blur[i]);
+            blur[i]->add(picture);
+            canvas->add(blur[i]);
         }
 
         //fill scene
@@ -59,8 +59,8 @@ struct UserExample : tvgexam::Example
             picture->size(SIZE, SIZE);
             picture->translate(0, SIZE);
 
-            fill->push(picture);
-            canvas->push(fill);
+            fill->add(picture);
+            canvas->add(fill);
         }
 
         //tint scene
@@ -72,8 +72,8 @@ struct UserExample : tvgexam::Example
             picture->size(SIZE, SIZE);
             picture->translate(SIZE, SIZE);
 
-            tint->push(picture);
-            canvas->push(tint);
+            tint->add(picture);
+            canvas->add(tint);
         }
 
         //trinton scene
@@ -85,8 +85,8 @@ struct UserExample : tvgexam::Example
             picture->size(SIZE, SIZE);
             picture->translate(SIZE * 2, SIZE);
 
-            trintone->push(picture);
-            canvas->push(trintone);
+            trintone->add(picture);
+            canvas->add(trintone);
         }
 
 
@@ -99,21 +99,21 @@ struct UserExample : tvgexam::Example
 
         //Apply GaussianBlur post effect (sigma, direction, border option, quality)
         for (int i = 0; i < 3; ++i) {
-            blur[i]->push(tvg::SceneEffect::ClearAll);
-            blur[i]->push(tvg::SceneEffect::GaussianBlur, 10.0 * double(progress), i, 0, 100);
+            blur[i]->add(tvg::SceneEffect::Clear);
+            blur[i]->add(tvg::SceneEffect::GaussianBlur, 10.0 * double(progress), i, 0, 100);
         }
 
         //Apply Fill post effect (rgba)
-        fill->push(tvg::SceneEffect::ClearAll);
-        fill->push(tvg::SceneEffect::Fill, 0, (int)(progress * 255), 0, (int)(255.0f * progress));
+        fill->add(tvg::SceneEffect::Clear);
+        fill->add(tvg::SceneEffect::Fill, 0, (int)(progress * 255), 0, (int)(255.0f * progress));
 
         //Apply Tint post effect (black:rgb, white:rgb, intensity)
-        tint->push(tvg::SceneEffect::ClearAll);
-        tint->push(tvg::SceneEffect::Tint, 0, 0, 0, 0, (int)(progress * 255), 0, (double)(progress * 100.0f));
+        tint->add(tvg::SceneEffect::Clear);
+        tint->add(tvg::SceneEffect::Tint, 0, 0, 0, 0, (int)(progress * 255), 0, (double)(progress * 100.0f));
 
         //Apply Tritone post effect (shadow:rgb, midtone:rgb, highlight:rgb, blending with original)
-        trintone->push(tvg::SceneEffect::ClearAll);
-        trintone->push(tvg::SceneEffect::Tritone, 0, (int)(progress * 255), 0, 199, 110, 36, 255, 255, 255, 0);
+        trintone->add(tvg::SceneEffect::Clear);
+        trintone->add(tvg::SceneEffect::Tritone, 0, (int)(progress * 255), 0, 199, 110, 36, 255, 255, 255, 0);
 
         canvas->update();
 

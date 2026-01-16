@@ -49,7 +49,7 @@ struct UserExample : tvgexam::Example
             shape->fill(fill);
 
             shape->mask(mask, tvg::MaskMethod::Alpha);
-            canvas->push(shape);
+            canvas->add(shape);
         }
 
         //Star
@@ -81,7 +81,7 @@ struct UserExample : tvgexam::Example
             shape1->fill(fill1);
 
             shape1->mask(mask1, tvg::MaskMethod::Alpha);
-            canvas->push(shape1);
+            canvas->add(shape1);
         }
 
         //Solid Rectangle
@@ -103,7 +103,7 @@ struct UserExample : tvgexam::Example
             shape2->fill(fill2);
 
             shape2->mask(mask2, tvg::MaskMethod::InvAlpha);
-            canvas->push(shape2);
+            canvas->add(shape2);
         }
 
         // Star
@@ -135,7 +135,7 @@ struct UserExample : tvgexam::Example
             shape3->fill(fill3);
 
             shape3->mask(mask3, tvg::MaskMethod::InvAlpha);
-            canvas->push(shape3);
+            canvas->add(shape3);
         }
 
         return true;

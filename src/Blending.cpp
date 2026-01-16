@@ -36,20 +36,20 @@ struct UserExample : tvgexam::Example
         text->text(name);
         text->fill(255, 255, 255);
         text->translate(x + 20, y);
-        canvas->push(text);
+        canvas->add(text);
 
         //solid
         {
             auto bottom = tvg::Shape::gen();
             bottom->appendRect(20.0f + x, 25.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             bottom->fill(255, 255, 0);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto top = tvg::Shape::gen();
             top->appendRect(45.0f + x, 50.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             top->fill(0, 255, 255);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
 
         //solid (half transparent)
@@ -57,13 +57,13 @@ struct UserExample : tvgexam::Example
             auto bottom = tvg::Shape::gen();
             bottom->appendRect(170.0f + x, 25.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             bottom->fill(255, 255, 0, 127);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto top = tvg::Shape::gen();
             top->appendRect(195.0f + x, 50.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             top->fill(0, 255, 255, 127);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
 
         //gradient blending
@@ -79,7 +79,7 @@ struct UserExample : tvgexam::Example
             auto bottom = tvg::Shape::gen();
             bottom->appendRect(325.0f + x, 25.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             bottom->fill(fill);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto fill2 = tvg::LinearGradient::gen();
             fill2->linear(350.0f + x, 50.0f + y, 450.0f + x, 150.0f + y);
@@ -89,7 +89,7 @@ struct UserExample : tvgexam::Example
             top->appendRect(350.0f + x, 50.0f + y, 100.0f, 100.0f, 10.0f, 10.0f);
             top->fill(fill2);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
 
         //image
@@ -98,13 +98,13 @@ struct UserExample : tvgexam::Example
             bottom->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true);
             bottom->translate(475 + x, 25.0f + y);
             bottom->scale(0.35f);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto top = bottom->duplicate();
             top->translate(500.0f + x, 50.0f + y);
             top->rotate(-10.0f);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
 
         //scene
@@ -113,12 +113,12 @@ struct UserExample : tvgexam::Example
             bottom->load(EXAMPLE_DIR"/svg/tiger.svg");
             bottom->translate(600.0f + x, 25.0f + y);
             bottom->scale(0.11f);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto top = bottom->duplicate();
             top->translate(625.0f + x, 50.0f + y);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
 
         //scene (half transparent)
@@ -128,12 +128,12 @@ struct UserExample : tvgexam::Example
             bottom->translate(750.0f + x, 25.0f + y);
             bottom->scale(0.11f);
             bottom->opacity(127);
-            canvas->push(bottom);
+            canvas->add(bottom);
 
             auto top = bottom->duplicate();
             top->translate(775.0f + x, 50.0f + y);
             top->blend(method);
-            canvas->push(top);
+            canvas->add(top);
         }
     }
 

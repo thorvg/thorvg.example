@@ -34,7 +34,7 @@ struct UserExample : tvgexam::Example
         auto bg = tvg::Shape::gen();
         bg->appendRect(0, 0, w, h);
         bg->fill(255, 255, 255);
-        canvas->push(bg);
+        canvas->add(bg);
 
         string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
         ifstream file(path, ios::binary);
@@ -46,7 +46,7 @@ struct UserExample : tvgexam::Example
         auto picture = tvg::Picture::gen();
         if (!tvgexam::verify(picture->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
         picture->translate(400, 250);
-        canvas->push(picture);
+        canvas->add(picture);
 
         auto picture2 = tvg::Picture::gen();
         if (!tvgexam::verify(picture2->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
@@ -61,7 +61,7 @@ struct UserExample : tvgexam::Example
 
         picture2->clip(circle);
 
-        canvas->push(picture2);
+        canvas->add(picture2);
 
         free(data);
 
