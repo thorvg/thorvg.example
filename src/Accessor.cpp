@@ -65,7 +65,7 @@ struct UserExample : tvgexam::Example
             shape->strokeWidth(5);
         }
 
-        canvas->push(picture);
+        canvas->add(picture);
 
         return true;
     }

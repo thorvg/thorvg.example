@@ -93,7 +93,7 @@ struct UserExample : tvgexam::Example
 
         shape->transform(m);
 
-        canvas->push(shape);
+        canvas->add(shape);
 
         return true;
     }

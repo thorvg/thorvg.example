@@ -41,7 +41,7 @@ struct UserExample : tvgexam::Example
         picture->translate(w/2, h/2);
         picture->scale(1.5f);
 
-        canvas->push(picture);
+        canvas->add(picture);
 
         return true;
     }

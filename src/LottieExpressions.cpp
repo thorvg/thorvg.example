@@ -87,7 +87,7 @@ struct UserExample : tvgexam::Example
         shape->appendRect(0, 0, w, h);
         shape->fill(75, 75, 75);
 
-        canvas->push(shape);
+        canvas->add(shape);
 
         this->w = w;
         this->h = h;
@@ -97,7 +97,7 @@ struct UserExample : tvgexam::Example
 
         //Run animation loop
         for (auto& animation : animations) {
-            canvas->push(animation->picture());
+            canvas->add(animation->picture());
         }
 
         return true;

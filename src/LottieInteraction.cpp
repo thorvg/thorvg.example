@@ -122,7 +122,7 @@ struct UserExample : tvgexam::Example
             auto shape = tvg::Shape::gen();
             shape->appendRect(100, 100, w - 200, h - 200);
             shape->fill(50, 50, 50);
-            canvas->push(std::move(shape));
+            canvas->add(std::move(shape));
         }
 
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/spin.json"))) return false;
@@ -134,7 +134,7 @@ struct UserExample : tvgexam::Example
         picture->scale(scale);
         picture->translate(float(w) * 0.5f, float(h) * 0.5f);
 
-        canvas->push(picture);
+        canvas->add(picture);
 
         origin.x = float(w / 2);
         origin.y = float(h / 2);

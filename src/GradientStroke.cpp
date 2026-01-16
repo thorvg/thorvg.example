@@ -75,7 +75,7 @@ struct UserExample : tvgexam::Example
         fill1->colorStops(colorStops1, 3);
         shape1->fill(fill1);
 
-        canvas->push(shape1);
+        canvas->add(shape1);
 
         // radial gradient stroke + duplicate
         auto shape2 = tvg::Shape::gen();
@@ -98,9 +98,9 @@ struct UserExample : tvgexam::Example
         auto shape4 = static_cast<tvg::Shape*>(shape2->duplicate());
         shape4->translate(0, 400);
 
-        canvas->push(shape2);
-        canvas->push(shape3);
-        canvas->push(shape4);
+        canvas->add(shape2);
+        canvas->add(shape3);
+        canvas->add(shape4);
 
         // dashed gradient stroke
         auto shape5 = tvg::Shape::gen();
@@ -120,7 +120,7 @@ struct UserExample : tvgexam::Example
         shape5->fill(fill5);
         shape5->scale(0.8);
 
-        canvas->push(shape5);
+        canvas->add(shape5);
 
         return true;
     }

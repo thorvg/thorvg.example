@@ -73,7 +73,7 @@ struct UserExample : tvgexam::Example
         shape->appendRect(0, 0, w, h);
         shape->fill(255, 255, 255);
 
-        canvas->push(shape);
+        canvas->add(shape);
 
         this->w = w;
         this->h = h;
@@ -82,11 +82,11 @@ struct UserExample : tvgexam::Example
         this->scandir(EXAMPLE_DIR"/svg");
 
         /* This showcase demonstrates the asynchronous loading of tvg.
-           For this, pictures are pushed at a certain sync time.
+           For this, pictures are added at a certain sync time.
            This allows time for the tvg resources to finish loading;
-           otherwise, you can push pictures immediately. */
+           otherwise, you can add pictures immediately. */
         for (auto& paint : pictures) {
-            canvas->push(paint);
+            canvas->add(paint);
         }
 
         pictures.clear();

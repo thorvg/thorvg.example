@@ -38,7 +38,7 @@ struct UserExample : tvgexam::Example
         auto bg = tvg::Shape::gen();
         bg->appendRect(0, 0, w, h);
         bg->fill(255, 255, 255);
-        canvas->push(bg);
+        canvas->add(bg);
 
         //Prepare a scene for post effects
         {
@@ -50,8 +50,8 @@ struct UserExample : tvgexam::Example
             picture->origin(0.5f, 0.0f);
             picture->translate(float(w / 2), 0.0f);
 
-            scene1->push(picture);
-            canvas->push(scene1);
+            scene1->add(picture);
+            canvas->add(scene1);
         }
 
         //Prepare a scene for post effects
@@ -64,8 +64,8 @@ struct UserExample : tvgexam::Example
             picture->origin(0.5f, 0.0f);
             picture->translate(float(w / 2), 250.0f);
 
-            scene2->push(picture);
-            canvas->push(scene2);
+            scene2->add(picture);
+            canvas->add(scene2);
         }
 
         //Prepare a scene for post effects
@@ -78,8 +78,8 @@ struct UserExample : tvgexam::Example
             picture->origin(0.5f, 0.0f);
             picture->translate(float(w / 2), 550.0f);
 
-            scene3->push(picture);
-            canvas->push(scene3);
+            scene3->add(picture);
+            canvas->add(scene3);
         }
 
         return true;
@@ -90,15 +90,15 @@ struct UserExample : tvgexam::Example
         auto progress = tvgexam::progress(elapsed, 2.5f, true);   //2.5 seconds
 
         //Clear the previously applied effects
-        scene1->push(tvg::SceneEffect::ClearAll);
+        scene1->add(tvg::SceneEffect::Clear);
         //Apply DropShadow post effect (r, g, b, a, angle, distance, sigma of blurness, quality)
-        scene1->push(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, 120.0, (double)(20.0f * progress), 3.0, 100);
+        scene1->add(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, 120.0, (double)(20.0f * progress), 3.0, 100);
 
-        scene2->push(tvg::SceneEffect::ClearAll);
-        scene2->push(tvg::SceneEffect::DropShadow, 65, 143, 222, (int)(255.0f * progress), 135.0, 10.0, 3.0, 100);
+        scene2->add(tvg::SceneEffect::Clear);
+        scene2->add(tvg::SceneEffect::DropShadow, 65, 143, 222, (int)(255.0f * progress), 135.0, 10.0, 3.0, 100);
 
-        scene3->push(tvg::SceneEffect::ClearAll);
-        scene3->push(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, (double)(360.0f * progress), 20.0, 0.0, 100);
+        scene3->add(tvg::SceneEffect::Clear);
+        scene3->add(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, (double)(360.0f * progress), 20.0, 0.0, 100);
 
         canvas->update();
 

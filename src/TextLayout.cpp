@@ -58,7 +58,7 @@ struct UserExample : tvgexam::Example
         lines->close();
         lines->moveTo(900, 0);
         lines->lineTo(900, h);
-        canvas->push(lines);
+        canvas->add(lines);
 
         auto fontSize = 15.0f;
         w -= border * 2.0f;
@@ -74,7 +74,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Top-Left");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //top center
@@ -87,7 +87,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Top-Center");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //top right
@@ -100,7 +100,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Top-End");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //middle left
@@ -113,7 +113,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Middle-Left");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //middle center
@@ -126,7 +126,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Middle-Center");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //middle right
@@ -139,7 +139,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Middle-End");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //bottom left
@@ -152,7 +152,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Bottom-Left");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //bottom center
@@ -165,7 +165,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Bottom-Center");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //bottom right
@@ -178,7 +178,7 @@ struct UserExample : tvgexam::Example
             text->layout(w, h);
             text->text("Bottom-End");
             text->fill(255, 255, 255);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         //origin
@@ -193,7 +193,7 @@ struct UserExample : tvgexam::Example
             text->fill(255, 255, 255);
             text->translate(900, 200 + i * 100);
             text->align(alignments[i].x, alignments[i].y);
-            canvas->push(text);
+            canvas->add(text);
         }
 
         return true;

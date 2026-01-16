@@ -39,7 +39,7 @@ struct UserExample : tvgexam::Example
         auto bg = tvg::Shape::gen();
         bg->appendRect(0, 0, w, h);
         bg->fill(255, 255, 255);
-        canvas->push(bg);
+        canvas->add(bg);
 
         //Solid Shape
         {
@@ -51,7 +51,7 @@ struct UserExample : tvgexam::Example
             solid->strokeFill(0, 0, 255);
             solid->strokeWidth(1);
 
-            canvas->push(solid);
+            canvas->add(solid);
         }
 
         //Gradient Shape
@@ -72,7 +72,7 @@ struct UserExample : tvgexam::Example
             fill->colorStops(colorStops, 3);
             gradient->fill(fill);
 
-            canvas->push(gradient);
+            canvas->add(gradient);
         }
 
         this->w = w;

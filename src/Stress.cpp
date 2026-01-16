@@ -37,7 +37,7 @@ struct UserExample : tvgexam::Example
             s->fill(rand() % 255, rand() % 255, rand() % 255, 253 + rand() % 3);
             s->strokeFill(255, 255, 255);
             s->strokeWidth(3);
-            canvas->push(s);
+            canvas->add(s);
         }
         return true;
     }

@@ -42,7 +42,7 @@ struct UserExample : tvgexam::Example
         // Use the NonZero fill rule: fills all areas enclosed by paths with non-zero winding numbers
         shape1->fillRule(tvg::FillRule::NonZero);
 
-        canvas->push(shape1);
+        canvas->add(shape1);
 
         //Star 2
         auto shape2 = tvg::Shape::gen();
@@ -56,7 +56,7 @@ struct UserExample : tvgexam::Example
         // Use the EvenOdd fill rule: fills areas where path overlaps an odd number of times
         shape2->fillRule(tvg::FillRule::EvenOdd);
 
-        canvas->push(shape2);
+        canvas->add(shape2);
 
         return true;
     }
