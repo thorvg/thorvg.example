@@ -46,9 +46,9 @@ struct UserExample : tvgexam::Example
 
             auto picture = tvg::Picture::gen();
             picture->load(EXAMPLE_DIR"/svg/thorvg-logo-clear.svg");
-            picture->scale(0.5f);
+            picture->scale(0.6f);
             picture->origin(0.5f, 0.0f);
-            picture->translate(float(w / 2), 0.0f);
+            picture->translate(float(w / 2), 50.0f);
 
             scene1->add(picture);
             canvas->add(scene1);
@@ -92,7 +92,7 @@ struct UserExample : tvgexam::Example
         //Clear the previously applied effects
         scene1->add(tvg::SceneEffect::Clear);
         //Apply DropShadow post effect (r, g, b, a, angle, distance, sigma of blurness, quality)
-        scene1->add(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, 120.0, (double)(20.0f * progress), 3.0, 100);
+        scene1->add(tvg::SceneEffect::DropShadow, 0, 0, 0, 125, 120.0, (double)(20.0f * progress), 7.0, 100);
 
         scene2->add(tvg::SceneEffect::Clear);
         scene2->add(tvg::SceneEffect::DropShadow, 65, 143, 222, (int)(255.0f * progress), 135.0, 10.0, 3.0, 100);
