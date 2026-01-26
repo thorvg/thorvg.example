@@ -71,7 +71,7 @@ struct UserExample : tvgexam::Example
         //Background
         auto shape = tvg::Shape::gen();
         shape->appendRect(0, 0, w, h);
-        shape->fill(255, 255, 255);
+        shape->fill(150, 150, 150);
 
         canvas->add(shape);
 
