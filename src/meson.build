@@ -4,16 +4,25 @@ examples_dep = [thorvg_dep, dependency('sdl2', required: true)]
 compiler_flags = ['-DSDL_MAIN_HANDLED']
 
 # GL or GLES
+gl_backend = get_option('gl_backend')
 gl_dep = dependency('gl', required: false)
 gles_dep = dependency('glesv2', required: false)
+egl_dep = dependency('egl', required: false)
 
-if gl_dep.found()
-    examples_dep += gl_dep
-elif gles_dep.found()
-    examples_dep += gles_dep
-    compiler_flags += ['-DTVGEXAMPLE_GLES_SUPPORTED']
-else
-    message('Neither OpenGL nor OpenGL ES was found. Skipping GL examples.')
+if gl_backend == 'gl'
+    if gl_dep.found()
+        examples_dep += gl_dep
+        compiler_flags += ['-DTVGEXAMPLE_GL_SUPPORTED']
+    else
+        message('Requested OpenGL but it was not found. Skipping GL examples.')
+    endif
+elif gl_backend == 'gles'
+    if gles_dep.found() and egl_dep.found()
+        examples_dep += [gles_dep, egl_dep]
+        compiler_flags += ['-DTVGEXAMPLE_GLES_SUPPORTED']
+    else
+        message('Requested OpenGL ES but it was not found. Skipping GL examples.')
+    endif
 endif
 
 # WebGPU
