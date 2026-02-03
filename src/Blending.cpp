@@ -31,7 +31,7 @@ struct UserExample : tvgexam::Example
     void blender(tvg::Canvas* canvas, const char* name, tvg::BlendMethod method, float x, float y, uint32_t* data)
     {
         auto text = tvg::Text::gen();
-        text->font("Arial");
+        text->font("PublicSans-Regular");
         text->size(15);
         text->text(name);
         text->fill(255, 255, 255);
@@ -140,7 +140,7 @@ struct UserExample : tvgexam::Example
 
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
-        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Arial.ttf"))) return false;
+        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
 
         //Prepare Image
         string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");

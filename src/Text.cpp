@@ -40,7 +40,7 @@ struct UserExample : tvgexam::Example
         //The loaded font will be released when the Initializer::term() is called.
         //Otherwise, you can immediately unload the font data.
         //Please check Text::unload() APIs.
-        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Arial.ttf"))) return false;
+        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NOTO-SANS-KR.ttf"))) return false;
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NanumGothicCoding.ttf"))) return false;
 
@@ -58,17 +58,17 @@ struct UserExample : tvgexam::Example
         free(data);
 
         auto text = tvg::Text::gen();
-        text->font("Arial");
+        text->font("PublicSans-Regular");
         text->size(80);
         text->text("THORVG Text");
         text->fill(255, 255, 255);
         canvas->add(text);
 
         auto text2 = tvg::Text::gen();
-        text2->font("Arial");
+        text2->font("PublicSans-Regular");
         text2->size(30);
         text2->italic();
-        text2->text("Font = \"Arial\", Size = 40, Style = Italic");
+        text2->text("Font = \"PublicSans-Regular\", Size = 40, Style = Italic");
         text2->translate(0, 150);
         text2->fill(255, 255, 255);
         canvas->add(text2);
@@ -82,7 +82,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text3);
 
         auto text4 = tvg::Text::gen();
-        text4->font("Arial");
+        text4->font("PublicSans-Regular");
         text4->size(25);
         text4->text("Purple Text");
         text4->fill(255, 0, 255);
@@ -90,7 +90,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text4);
 
         auto text5 = tvg::Text::gen();
-        text5->font("Arial");
+        text5->font("PublicSans-Regular");
         text5->size(25);
         text5->text("Gray Text");
         text5->fill(150, 150, 150);
@@ -98,7 +98,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text5);
 
         auto text6 = tvg::Text::gen();
-        text6->font("Arial");
+        text6->font("PublicSans-Regular");
         text6->size(25);
         text6->text("Yellow Text");
         text6->fill(255, 255, 0);
@@ -176,7 +176,6 @@ struct UserExample : tvgexam::Example
         fill2->colorStops(colorStops2, 3);
 
         text11->fill(fill2);
-
         text11->translate(0, 450);
 
         canvas->add(text11);
@@ -191,7 +190,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text12);
 
         auto text13 = tvg::Text::gen();
-        text13->font("Arial");
+        text13->font("PublicSans-Regular");
         text13->size(20);
         text13->fill(255, 255, 255);
         text13->text("LINE-FEED TEST. THIS IS THE FIRST LINE - \nTHIS IS THE SECOND LINE.");
@@ -199,7 +198,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text13);
 
         auto text14 = tvg::Text::gen();
-        text14->font("Arial");
+        text14->font("PublicSans-Regular");
         text14->size(20);
         text14->fill(255, 255, 255);
         text14->spacing(1.5f, 1.5f);

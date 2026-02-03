@@ -81,9 +81,9 @@ struct UserExample : tvgexam::Example
         }
 
         {
-            if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Arial.ttf"))) return false;
+            if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
             auto text = tvg::Text::gen();
-            text->font("Arial");
+            text->font("PublicSans-Regular");
             text->size(30);
             text->text("Text Test");
             text->fill(255, 255, 0);
@@ -290,7 +290,7 @@ struct UserExample : tvgexam::Example
             scene->scale(0.7f);
 
             auto text = tvg::Text::gen();
-            text->font("Arial");
+            text->font("PublicSans-Regular");
             text->size(50);
             text->text("Text Test");
             text->fill(255, 255, 0);

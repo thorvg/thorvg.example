@@ -226,14 +226,14 @@ void contents()
         Tvg_Paint scene = tvg_scene_new();
 
         //load from a memory
-        FILE* file = fopen(EXAMPLE_DIR"/font/Arial.ttf", "rb");
+        FILE* file = fopen(EXAMPLE_DIR"/font/PublicSans-Regular.ttf", "rb");
         if (file) {
             fseek(file, 0, SEEK_END);
             size_t data_size = ftell(file);
             fseek(file, 0, SEEK_SET);
             char* data = (char*)malloc(data_size);
             if (fread(data, 1, data_size, file) == data_size) {
-                if (tvg_font_load_data("Arial", data, data_size, "ttf", true) != TVG_RESULT_SUCCESS) {
+                if (tvg_font_load_data("PublicSans-Regular", data, data_size, "ttf", true) != TVG_RESULT_SUCCESS) {
                     printf("Problem with loading the font file from a memory. Did you enable TTF Loader?\n");
                 }
             }
@@ -248,7 +248,7 @@ void contents()
         tvg_gradient_set_spread(grad, TVG_STROKE_FILL_REFLECT);
 
         Tvg_Paint text = tvg_text_new();
-        tvg_text_set_font(text, "Arial");
+        tvg_text_set_font(text, "PublicSans-Regular");
         tvg_text_set_size(text, 40.0f);
         tvg_text_set_outline(text, 2, 255, 0, 0);
         tvg_text_set_italic(text, 0.18f);

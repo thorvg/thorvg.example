@@ -142,8 +142,8 @@ struct UserExample : tvgexam::Example
         //Duplicate Text
         {
             auto text = tvg::Text::gen();
-            if (!tvgexam::verify(text->load(EXAMPLE_DIR"/font/Arial.ttf"))) return false;
-            text->font("Arial");
+            if (!tvgexam::verify(text->load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
+            text->font("PublicSans-Regular");
             text->size(50);
             text->translate(0, 650);
             text->text("ThorVG Text");

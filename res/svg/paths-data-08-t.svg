@@ -33,7 +33,7 @@ variations in the labelling text (per CSS2 rules).
       </Paragraph>
       <Paragraph>
 The test uses the 'path' element, as well as basic fill (solid primary colors), 
-stroke (black 1-pixel lines), font-family (Arial) and font-size properties.
+stroke (black 1-pixel lines), font-family (PublicSans-Regular) and font-size properties.
       </Paragraph>
     </OperatorScript>
   </SVGTestCase>
@@ -47,8 +47,8 @@ stroke (black 1-pixel lines), font-family (Arial) and font-size properties.
 		<!-- ====================================================================== -->
 		<!-- First Group of Triangles using M & Z commands ======================== -->
 		<!-- ====================================================================== -->
-		<text font-family="Arial" font-size="24" x="75" y="34">Lines drawn with commands:</text>
-		<text font-family="Arial" font-size="24" x="180" y="64">M and Z</text>
+		<text font-family="PublicSans-Regular" font-size="24" x="75" y="34">Lines drawn with commands:</text>
+		<text font-family="PublicSans-Regular" font-size="24" x="180" y="64">M and Z</text>
 
         <g transform="scale(1.8)">
 			<path id="Triangle_stroke_MZ" fill="none" stroke="#000000" d="   M   62.00000   56.00000    113.96152  146.00000   10.03848  146.00000    62.00000   56.00000   Z    M   62.00000  71.00000   100.97114  138.50000   23.02886  138.50000   62.00000  71.00000   Z  "/>
@@ -58,7 +58,7 @@ stroke (black 1-pixel lines), font-family (Arial) and font-size properties.
 			<rect x="60.00000" y="69.00000" width="4" height="4" fill="#00C000" stroke="none"/>
 			<rect x="98.97114" y="136.50000" width="4" height="4" fill="#00C000" stroke="none"/>
 			<rect x="21.02886" y="136.50000" width="4" height="4" fill="#00C000" stroke="none"/>
-			<text font-family="Arial" font-size="12" x="42" y="162">stroked</text>
+			<text font-family="PublicSans-Regular" font-size="12" x="42" y="162">stroked</text>
 			<path id="Triangle_fill_MZ" fill="#FF0000" stroke="none" fill-rule="evenodd" d="   M  177.00000   56.00000    228.96152  146.00000   125.03848  146.00000    177.00000   56.00000   Z    M  177.00000  71.00000   215.97114  138.50000   138.02886  138.50000   177.00000  71.00000   Z  "/>
 			<rect x="175.00000" y="54.00000" width="4" height="4" fill="#00C000" stroke="none"/>
 			<rect x="226.96152" y="144.00000" width="4" height="4" fill="#00C000" stroke="none"/>
@@ -66,7 +66,7 @@ stroke (black 1-pixel lines), font-family (Arial) and font-size properties.
 			<rect x="175.00000" y="69.00000" width="4" height="4" fill="#00C000" stroke="none"/>
 			<rect x="213.97114" y="136.50000" width="4" height="4" fill="#00C000" stroke="none"/>
 			<rect x="136.02886" y="136.50000" width="4" height="4" fill="#00C000" stroke="none"/>
-			<text font-family="Arial" font-size="12" x="162" y="162">filled</text>
+			<text font-family="PublicSans-Regular" font-size="12" x="162" y="162">filled</text>
         </g>
 	</g>
 	<text id="revision" x="10" y="340" font-size="40" stroke="none" fill="black">$Revision: 1.2 $</text>

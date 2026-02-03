@@ -32,7 +32,7 @@ struct UserExample : tvgexam::Example
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
         // Load fonts
-        return tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Arial.ttf"));
+        return tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"));
     }
 
     bool update(tvg::Canvas* canvas, uint32_t elapsed) override
@@ -53,7 +53,7 @@ struct UserExample : tvgexam::Example
         float b = std::sin(time + 4) * 127 + 128;
 
         auto animTitle = tvg::Text::gen();
-        animTitle->font("Arial");
+        animTitle->font("PublicSans-Regular");
         animTitle->size(48);
         animTitle->text("ThorVG");
         animTitle->fill(uint8_t(r), uint8_t(g), uint8_t(b));
@@ -67,7 +67,7 @@ struct UserExample : tvgexam::Example
         // Pulsing subtitle
         float scale = 1 + std::sin(time * 2) * 0.1f;
         auto animSubtitle = tvg::Text::gen();
-        animSubtitle->font("Arial");
+        animSubtitle->font("PublicSans-Regular");
         animSubtitle->size(24 * scale);
         animSubtitle->text("High-Performance Vector Graphics");
         animSubtitle->fill(100, 200, 255);
@@ -78,7 +78,7 @@ struct UserExample : tvgexam::Example
 
         // Rotating text
         auto rotatingText = tvg::Text::gen();
-        rotatingText->font("Arial");
+        rotatingText->font("PublicSans-Regular");
         rotatingText->size(32);
         rotatingText->text("Animated!");
         rotatingText->fill(255, 200, 100);
@@ -110,7 +110,7 @@ struct UserExample : tvgexam::Example
             float charColor = std::sin(time + i * 0.3f) * 127 + 128;
 
             auto charText = tvg::Text::gen();
-            charText->font("Arial");
+            charText->font("PublicSans-Regular");
             charText->size(28);
             char buf[2] = {waveText[i], '\0'};
             charText->text(buf);

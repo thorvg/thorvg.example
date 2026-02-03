@@ -79,9 +79,9 @@ struct UserExample : tvgexam::Example
 
         //normal text
         {
-            if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Arial.ttf"))) return false;
+            if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
             text = tvg::Text::gen();
-            text->font("Arial");
+            text->font("PublicSans-Regular");
             text->size(100);
             text->text("Intersect?!");
             text->translate(25, 800);
