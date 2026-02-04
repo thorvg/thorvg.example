@@ -53,7 +53,6 @@ source_file = [
     'ImageScaling.cpp',
     'Intersects.cpp',
     'LinearGradient.cpp',
-    'LumaMasking.cpp',
     'Masking.cpp',
     'MaskingMethods.cpp',
     'MultiCanvas.cpp',
