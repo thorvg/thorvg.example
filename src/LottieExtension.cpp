@@ -24,7 +24,7 @@
 /* ThorVG Drawing Contents                                              */
 /************************************************************************/
 
-#define NUM_PER_ROW 4
+#define NUM_PER_ROW 5
 #define NUM_PER_COL 4
 
 struct UserExample : tvgexam::Example
@@ -268,6 +268,21 @@ struct UserExample : tvgexam::Example
             slots.push_back(std::move(slot));
         }
 
+        //slot (effect)
+        {
+            auto slot = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
+            auto picture = slot->picture();
+            if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/slot13.json"))) return false;
+
+            const char* slotJson = R"({"slider_control":{"p":{"a":1,"ix":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"t":0,"s":[0],"e":[50]},{"t":100}]}}})";
+            auto slotId = slot->gen(slotJson);
+            if (!tvgexam::verify(slot->apply(slotId))) return false;
+
+            sizing(picture, 13);
+            canvas->add(picture);
+            slots.push_back(std::move(slot));
+        }
+
         //marker
         {
             marker = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
@@ -275,7 +290,7 @@ struct UserExample : tvgexam::Example
             if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/marker.json"))) return false;
             if (!tvgexam::verify(marker->segment("sectionC"))) return false;
 
-            sizing(picture, 13);
+            sizing(picture, 14);
             canvas->add(picture);
         }
 
@@ -296,7 +311,7 @@ struct UserExample : tvgexam::Example
             if (!tvgexam::verify(picture->resolver(func, nullptr))) return false;
             if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/resolver1.json"))) return false;
 
-            sizing(picture, 14);
+            sizing(picture, 15);
             canvas->add(picture);
         }
 
@@ -317,7 +332,7 @@ struct UserExample : tvgexam::Example
             if (!tvgexam::verify(picture->resolver(func, nullptr))) return false;
             if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/resolver2.json"))) return false;
 
-            sizing(picture, 15);
+            sizing(picture, 16);
             canvas->add(picture);
         }
 
