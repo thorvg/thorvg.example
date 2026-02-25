@@ -79,6 +79,7 @@ source_file = [
     'TextEffects.cpp',
     'TextLayout.cpp',
     'TextLineWrap.cpp',
+    'TextMetrics.cpp',
     'Transform.cpp',
     'TrimPath.cpp',
     'Viewport.cpp'

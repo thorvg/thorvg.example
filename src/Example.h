@@ -65,11 +65,13 @@ bool verify(tvg::Result result, string failMsg = "");
 struct Example
 {
     uint32_t elapsed = 0;
+    bool lshift = false;
 
     virtual bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) = 0;
     virtual bool update(tvg::Canvas* canvas, uint32_t elapsed) { return false; }
     virtual bool clickdown(tvg::Canvas* canvas, int32_t x, int32_t y) { return false; }
     virtual bool clickup(tvg::Canvas* canvas, int32_t x, int32_t y) { return false; }
+    virtual bool keydown(tvg::Canvas* canvas, int32_t key) { return false; }
     virtual bool motion(tvg::Canvas* canvas, int32_t x, int32_t y) { return false; }
     virtual void populate(const char* path) {}
     virtual ~Example() {}
@@ -255,10 +257,14 @@ struct Window
                         running = false;
                         break;
                     }
+                    case SDL_KEYDOWN: {
+                        if (event.key.keysym.sym == SDLK_ESCAPE) running = false;
+                        else if (event.key.keysym.sym == SDLK_LSHIFT) example->lshift = true;
+                        else needDraw |= example->keydown(canvas, event.key.keysym.sym);
+                        break;
+                    }
                     case SDL_KEYUP: {
-                        if (event.key.keysym.sym == SDLK_ESCAPE) {
-                            running = false;
-                        }
+                        if (event.key.keysym.sym == SDLK_LSHIFT) example->lshift = false;
                         break;
                     }
                     case SDL_MOUSEBUTTONDOWN: {
