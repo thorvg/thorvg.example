@@ -171,9 +171,6 @@ struct Window
 
     virtual ~Window()
     {
-        delete(example);
-        delete(canvas);
-
         //Terminate the SDL
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -340,6 +337,12 @@ struct SwWindow : Window
         resize();
     }
 
+    ~SwWindow()
+    {
+        delete(example);
+        delete(canvas);
+    }
+
     void resize() override
     {
         auto surface = SDL_GetWindowSurface(window);
@@ -392,9 +395,8 @@ struct GlWindow : Window
 
     virtual ~GlWindow()
     {
-        //Free in the reverse order of their creation.
+        delete(example);
         delete(canvas);
-        canvas = nullptr;
 
         SDL_GL_DeleteContext(context);
     }
@@ -501,9 +503,8 @@ struct WgWindow : Window
 
     virtual ~WgWindow()
     {
-        //Free in the reverse order of their creation.
+        delete(example);
         delete(canvas);
-        canvas = nullptr;
 
         wgpuDeviceRelease(device);
         wgpuAdapterRelease(adapter);
