@@ -55,6 +55,7 @@ source_file = [
     'LinearGradient.cpp',
     'Masking.cpp',
     'MaskingMethods.cpp',
+    'ManyImages.cpp',
     'ManyRects.cpp',
     'MultiCanvas.cpp',
     'Opacity.cpp',
