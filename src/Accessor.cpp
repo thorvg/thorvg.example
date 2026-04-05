@@ -28,37 +28,38 @@
 
 struct UserExample : tvgexam::Example
 {
+    // This example demonstrates two approaches to accessing internal SVG scene nodes.
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
-        //load the tvg file
+        // SVG Picture
         auto picture = tvg::Picture::gen();
-        auto result = picture->load(EXAMPLE_DIR"/svg/favorite_on.svg");
-        if (!tvgexam::verify(result)) return false;
+
+        picture->accessible = true;  // allow accessing to svg internals, it must be set before svg load call.
+        picture->load(EXAMPLE_DIR"/svg/favorite_on.svg");
         picture->size(w, h);
 
+        /* 1. This demonstartes a traversing the internal scene tree of the SVG picture. */
         auto accessor = unique_ptr<tvg::Accessor>(tvg::Accessor::gen());
 
-        //The callback function from lambda expression.
-        //This function will be called for every paint nodes of the picture tree.
-        auto f = [](const tvg::Paint* paint, void* data) -> bool
-        {
-            if (paint->type() == tvg::Type::Shape) {
-                auto shape = (tvg::Shape*) paint;
-                //override color?
-                uint8_t r, g, b;
-                shape->fill(&r, &g, &b);
-                if (r == 255 && g == 180 && b == 0)
-                    shape->fill(0, 0, 255);
+        // If picture->accessible is set to true, only ID-accessible nodes are traversed,
+        // which improves efficiency. Otherwise, all nodes are considered.
+        auto f = [](const tvg::Paint* paint, void* data) -> bool {
+            auto accessor = static_cast<tvg::Accessor*>(data);
 
+            // figure out SVG node with the unique ID "star".
+            if (!strcmp(accessor->name(paint->id), "star")) {
+                // override color
+                auto shape = (tvg::Shape*) paint;
+                shape->fill(0, 0, 255);
             }
 
-            //You can return false, to stop traversing immediately.
+            // you can return false, to stop traversing immediately
             return true;
         };
 
-        if (!tvgexam::verify(accessor->set(picture, f, nullptr))) return false;
+        if (!tvgexam::verify(accessor->set(picture, f, accessor.get()))) return false;
 
-        // Try to retrieve the shape that corresponds to the SVG node with the unique ID "star".
+        /* 2. This demonstrates a direct-access to the shape that corresponds to the SVG node with the unique ID "star". */
         if (auto paint = picture->paint(tvg::Accessor::id("star"))) {
             auto shape = static_cast<tvg::Shape*>(const_cast<tvg::Paint*>(paint));
             shape->strokeFill(255, 255, 0);
