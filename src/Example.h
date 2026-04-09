@@ -383,6 +383,8 @@ struct GlWindow : Window
         window = SDL_CreateWindow("ThorVG Example (OpenGL/ES)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
         context = SDL_GL_CreateContext(window);
 
+        SDL_GL_SetSwapInterval(0);  // disable fps limit
+
         //Create a Canvas
         canvas = tvg::GlCanvas::gen();
         if (!canvas) {
