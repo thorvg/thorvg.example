@@ -106,6 +106,37 @@ if cc.links(lottie_example, dependencies : thorvg_dep, include_directories : tho
         'LottieBigSize.cpp',
         'LottieTweening.cpp'
     ]
+
+    # audio dependencies
+    vendor_inc = include_directories('../vendor')
+    audio_link_args = []
+    if host_machine.system() == 'darwin'
+        audio_link_args += [
+            '-framework', 'CoreAudio',
+            '-framework', 'CoreFoundation',
+            '-framework', 'AudioToolbox',
+        ]
+    elif host_machine.system() == 'linux'
+        audio_link_args += ['-ldl', '-lpthread', '-lm']
+        alsa_dep = dependency('alsa', required: false)
+        if alsa_dep.found()
+            audio_link_args += ['-lasound']
+        else
+            pulse_dep = dependency('libpulse', required: false)
+            if pulse_dep.found()
+                audio_link_args += ['-lpulse']
+            endif
+        endif
+    elif host_machine.system() == 'windows'
+        audio_link_args += ['-lole32', '-lwinmm']
+    endif
+
+    executable('LottieAudio', 'LottieAudio.cpp',
+        dependencies      : examples_dep,
+        include_directories: vendor_inc,
+        link_args         : audio_link_args,
+        cpp_args          : compiler_flags)
+
     message('ThorVG Lottie found. Enabled Lottie examples.')
 else
     message('ThorVG Lottie not found. Skipping Lottie examples.')
