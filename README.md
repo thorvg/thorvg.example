@@ -7,7 +7,7 @@
 
 # ThorVG Example
 <p align="center">
-  <img width="800" height="auto" src="https://github.com/thorvg/thorvg.site/blob/main/readme/logo/512/thorvg-banner.png">
+  <img width="550" height="auto" src="https://github.com/thorvg/thorvg.site/blob/main/readme/logo/animated_brand.svg">
 </p>
 
 ThorVG Example provides a wide range of example codes. Those examples demonstrate how to use ThorVG's APIs to render vector graphics, handle images, and play animations. Each example is designed to highlight specific features and help developers get started quickly with ThorVG. <br />
