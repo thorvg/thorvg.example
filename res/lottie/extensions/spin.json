@@ -124,7 +124,7 @@
                     "a": 0,
                     "k": [0, 0],
                     "ix": 3,
-                    "x": "var $bm_rt; wiggle = Math.sin(time * 5) * 20 + 320; $bm_rt = [(ct_xcoord + wiggle), ct_ycoord];"
+                    "sid": "finger_cursor"
                 },
                 "a": {
                     "a": 0,
@@ -911,7 +911,7 @@
                     "a": 1,
                     "k": 0,
                     "ix": 10,
-                    "x": "var $bm_rt; $bm_rt = ct_val;"
+                    "sid": "spin_rotation"
                 },
                 "p": {
                     "a": 0,
