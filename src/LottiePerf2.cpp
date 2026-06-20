@@ -32,9 +32,6 @@ struct UserExample : tvgexam::Example
 
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
-        //The default font for fallback in case
-        tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
-
         //Animation Controller
         animation = unique_ptr<tvg::Animation>(tvg::Animation::gen());
         auto picture = animation->picture();
@@ -47,7 +44,7 @@ struct UserExample : tvgexam::Example
 
         canvas->add(shape);
 
-        if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/bigsize2.json"))) return false;
+        if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/perf2.json"))) return false;
 
         //image scaling preserving its aspect ratio
         float w2, h2;
