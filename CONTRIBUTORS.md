@@ -24,3 +24,4 @@ For definitions and responsibilities of each project role, see [Roles & Responsi
 - Fabian Blatz @faxe1008
 - Jakub Marcowski @Chubercik
 - Duram Kim @alpakaDurumi
+- Benjamin Halko @BenjaminHalko
