@@ -104,8 +104,6 @@ if cc.links(lottie_example, dependencies : thorvg_dep, include_directories : tho
         'LottieExpressions.cpp',
         'LottieExtension.cpp',
         'LottieInteraction.cpp',
-        'LottiePerf1.cpp',
-        'LottiePerf2.cpp',
         'LottieTweening.cpp'
     ]
     message('ThorVG Lottie found. Enabled Lottie examples.')
