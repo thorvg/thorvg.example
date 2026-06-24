@@ -45,8 +45,7 @@ struct UserExample : tvgexam::Example
         if (info.active) {
             if (!playing) {
                 playing = true;
-                printf("[audio] play   src=%s (%s) offset=%.3fs volume=%.0f\n",
-                       info.src ? info.src : "(null)",
+                printf("[audio] play (%s) offset=%.3fs volume=%.0f\n",
                        info.embedded ? "embedded" : "external",
                        info.offset, info.volume);
             }
