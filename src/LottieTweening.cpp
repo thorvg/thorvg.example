@@ -41,8 +41,6 @@ struct UserExample : tvgexam::Example
     int stateIdx = 0;               //current state index
 
     struct {
-        float from;           //tweening from frame number
-        float to;             //tweening to frame number
         float beginTime;      //tweening begin time
         bool active = false;  //whether on-tweening or not
     } tween;
@@ -74,7 +72,7 @@ struct UserExample : tvgexam::Example
     void tweening(int stateIdx)
     {
         //don't allow the overlapped tweening
-        if (tween.active || stateIdx == this->stateIdx) return;
+        if (stateIdx == this->stateIdx) return;
 
         //reset the current state
         lottie->segment(nullptr);
@@ -82,11 +80,8 @@ struct UserExample : tvgexam::Example
         //tweening trigger time
         tween.beginTime = timestamp();
 
-        //the current animation frame as the tweening "from" frame
-        tween.from = lottie->curFrame();
-
         //the next state begin frame as the tweening "to" frame
-        tween.to = states[stateIdx].begin;
+        lottie->tweenTo(states[stateIdx].begin);
 
         tween.active = true;
 
@@ -151,7 +146,7 @@ struct UserExample : tvgexam::Example
 
         //perform the tweening effect
         if (progress < 1.0f) {
-            if (lottie->tween(tween.from, tween.to, progress) == tvg::Result(0)) {
+            if (lottie->tween(progress) == tvg::Result(0)) {
                 canvas->update();
                 return true;
             }
