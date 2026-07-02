@@ -21,6 +21,8 @@
  */
 
 #include <thorvg-1/thorvg_lottie.h>
+#include <iomanip>
+#include <iostream>
 #include "Example.h"
 
 
@@ -45,16 +47,16 @@ struct UserExample : tvgexam::Example
         if (info.active) {
             if (!playing) {
                 playing = true;
-                printf("[audio] play (%s) offset=%.3fs volume=%.0f\n",
-                       info.embedded ? "embedded" : "external",
-                       info.offset, info.volume);
+                std::cout << "[audio] play (" << (info.embedded ? "embedded" : "external")
+                          << ") offset=" << std::fixed << std::setprecision(3) << info.offset
+                          << "s volume=" << std::setprecision(0) << info.volume << std::endl;
             }
             audioBaseOffset = info.offset;
             audioBaseElapsed = elapsed;
             audioVolume = info.volume;
         } else if (playing) {
             playing = false;
-            printf("\n[audio] stop\n");
+            std::cout << "\n[audio] stop" << std::endl;
         }
     }
 
@@ -73,8 +75,10 @@ struct UserExample : tvgexam::Example
         }
         bar[WIDTH] = '\0';
 
-        printf("\r[audio] |%s| %6.2fs  vol %3.0f", bar, pos, audioVolume);
-        fflush(stdout);
+        std::cout << "\r[audio] |" << bar << "| "
+                  << std::setw(6) << std::fixed << std::setprecision(2) << pos
+                  << "s  vol " << std::setw(3) << std::setprecision(0) << audioVolume
+                  << std::endl;
     }
 
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
