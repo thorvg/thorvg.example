@@ -69,9 +69,6 @@ struct UserExample : tvgexam::Example
     //stateIdx is the next desired state
     void tweening(int stateIdx)
     {
-        //don't allow the overlapped tweening
-        if (stateIdx == this->stateIdx) return;
-
         //reset the current state
         lottie->segment(nullptr);
 
@@ -118,7 +115,7 @@ struct UserExample : tvgexam::Example
 
         canvas->add(shape);
 
-        if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/emoji.json"))) return false;
+        if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/sample.json"))) return false;
 
         //image scaling preserving its aspect ratio
         float w2, h2;
@@ -140,7 +137,7 @@ struct UserExample : tvgexam::Example
         //perform tweening for 0.25 seconds.
         //in this sample, we use linear interpolation. You can vary the progress
         //with a specific interpolation style (e.g., sine, cosine, or spring curves).
-        auto progress = (timestamp() - tween.beginTime) / 0.25f;
+        auto progress = (timestamp() - tween.beginTime) / 1.0f;
 
         //perform the tweening effect
         if (progress < 1.0f) {
@@ -168,15 +165,6 @@ struct UserExample : tvgexam::Example
     {
         //on state tweening
         if (tween.active) return tweening(canvas);
-
-        //play the current state
-        auto progress = tvgexam::progress(elapsed, lottie->duration());
-
-        //Update animation frame only when it's changed
-        if (lottie->frame(lottie->totalFrame() * progress) == tvg::Result(0)) {
-            canvas->update();
-            return true;
-        }
 
         return false;
     }
