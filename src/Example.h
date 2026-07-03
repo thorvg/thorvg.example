@@ -517,7 +517,8 @@ struct WgWindow : Window
     void resize() override
     {
         //Set the canvas target and draw on it.
-        verify(static_cast<tvg::WgCanvas*>(canvas)->target(device, instance, surface, width, height, tvg::ColorSpace::ABGR8888S));
+        tvg::WgCanvas::Context context = {instance, adapter, device};
+        verify(static_cast<tvg::WgCanvas*>(canvas)->target(context, surface, width, height, tvg::ColorSpace::ABGR8888));
     }
 
     void refresh() override 
