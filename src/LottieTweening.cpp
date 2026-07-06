@@ -56,10 +56,8 @@ struct UserExample : tvgexam::Example
         for (uint32_t i = 0; i < lottie->markersCnt(); ++i) {
             //specify the current segment to retrieve the segment's starting frame.
             float begin;
-            auto name = lottie->marker(i);
+            auto name = lottie->marker(i, &begin, nullptr);
             lottie->segment(name);
-            static_cast<tvg::Animation*>(lottie)->segment(&begin);
-
             //save the current AnimState to the state list
             states.push_back({string(name), begin});
         }
