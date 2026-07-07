@@ -94,7 +94,7 @@ struct UserExample : tvgexam::Example
         for (auto& state : states) {
             if (auto paint = lottie->picture()->paint(tvg::Accessor::id(state.name.c_str()))) {
                 //hit a emoji layer!
-                if (const_cast<tvg::Paint*>(paint)->intersects(x, y, 1, 1)) {
+                if (const_cast<tvg::Paint*>(paint)->intersects(x, y, 1, 1, true)) {
                     tweening(i);
                     return false;
                 }
