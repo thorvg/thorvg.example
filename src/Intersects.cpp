@@ -132,10 +132,10 @@ struct UserExample : tvgexam::Example
         text->opacity(255);
         tiger->opacity(255);
 
-        if (shape->intersects(mx, my, mw, mh)) shape->opacity(127);
-        else if (picture->intersects(mx, my, mw, mh)) picture->opacity(127);
-        else if (text->intersects(mx, my, mw, mh)) text->opacity(127);
-        else if (tiger->intersects(mx, my, mw, mh)) tiger->opacity(127);
+        if (shape->intersects(mx, my, mw, mh, true)) shape->opacity(127);
+        else if (picture->intersects(mx, my, mw, mh, true)) picture->opacity(127);
+        else if (text->intersects(mx, my, mw, mh, true)) text->opacity(127);
+        else if (tiger->intersects(mx, my, mw, mh, true)) tiger->opacity(127);
 
         canvas->update();
 
