@@ -311,7 +311,7 @@ bool runWg()
 
     // create surface
     WGPUSurfaceDescriptor surfaceDesc{};
-    surfaceDesc.nextInChain = (const WGPUChainedStruct*)&surfaceNativeDesc;
+    surfaceDesc.nextInChain = (WGPUChainedStruct*)&surfaceNativeDesc;
     surfaceDesc.label.data = "The surface";
     surfaceDesc.label.length = WGPU_STRLEN;
     auto surface = wgpuInstanceCreateSurface(instance, &surfaceDesc);
