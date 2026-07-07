@@ -475,7 +475,7 @@ struct WgWindow : Window
 
         // create surface
         WGPUSurfaceDescriptor surfaceDesc{};
-        surfaceDesc.nextInChain = (const WGPUChainedStruct*)&surfaceNativeDesc;
+        surfaceDesc.nextInChain = (WGPUChainedStruct*)&surfaceNativeDesc;
         surfaceDesc.label.data = "The surface";
         surfaceDesc.label.length = WGPU_STRLEN;
         surface = wgpuInstanceCreateSurface(instance, &surfaceDesc);
