@@ -24,9 +24,46 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define WIDTH 800
 #define HEIGHT 800
+
+static constexpr uint32_t AutoQuitTicks = 20000;
+
+static int windowPos()
+{
+    auto displays = SDL_GetNumVideoDisplays();
+    return SDL_WINDOWPOS_CENTERED_DISPLAY(displays > 1 ? 1 : 0);
+}
+
+static bool envEquals(const char* env, const char* value)
+{
+    while (*env && *value) {
+        auto c1 = *env++;
+        auto c2 = *value++;
+        if (c1 >= 'A' && c1 <= 'Z') c1 += 'a' - 'A';
+        if (c2 >= 'A' && c2 <= 'Z') c2 += 'a' - 'A';
+        if (c1 != c2) return false;
+    }
+    return *env == '\0' && *value == '\0';
+}
+
+static bool fullscreen()
+{
+    auto env = getenv("FULLSCREEN");
+    if (!env) return true;
+
+    if (envEquals(env, "0") || envEquals(env, "false") || envEquals(env, "off") || envEquals(env, "no")) return false;
+    if (envEquals(env, "1") || envEquals(env, "true") || envEquals(env, "on") || envEquals(env, "yes")) return true;
+
+    return true;
+}
+
+static Uint32 windowFlags(Uint32 flags)
+{
+    return fullscreen() ? flags | SDL_WINDOW_FULLSCREEN_DESKTOP : flags;
+}
 
 /************************************************************************/
 /* Capi Test Code                                                       */
@@ -283,7 +320,7 @@ int main(int argc, char **argv)
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    SDL_Window* window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    SDL_Window* window = SDL_CreateWindow("ThorVG Example (Software)", windowPos(), windowPos(), WIDTH, HEIGHT, windowFlags(SDL_WINDOW_SHOWN));
     SDL_Surface* surface = SDL_GetWindowSurface(window);
 
     //create the canvas
@@ -301,6 +338,7 @@ int main(int argc, char **argv)
     SDL_Event event;
     auto running = true;
     auto ptime = SDL_GetTicks();
+    auto stime = ptime;
     auto elapsed = 0;
 
     while (running) {
@@ -338,6 +376,7 @@ int main(int argc, char **argv)
         auto ctime = SDL_GetTicks();
         elapsed += (ctime - ptime);
         ptime = ctime;
+        if (ctime - stime >= AutoQuitTicks) running = false;
     }
 
     SDL_DestroyWindow(window);

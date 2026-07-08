@@ -66,12 +66,10 @@ struct UserExample : tvgexam::Example
         auto progress = tvgexam::progress(elapsed, animation->duration());
 
         //Update animation frame only when it's changed
-        if (animation->frame(animation->totalFrame() * progress) == tvg::Result(0)) {
+        animation->frame(animation->totalFrame() * progress);
             canvas->update();
             return true;
-        }
 
-        return false;
     }
 };
 

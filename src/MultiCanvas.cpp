@@ -58,6 +58,8 @@ void mainloop()
 {
     SDL_Event event;
     auto running = true;
+    auto tickOut = tvgexam::tickOut();
+    auto stime = SDL_GetTicks();
 
     while (running) {
         //SDL Event handling
@@ -75,6 +77,8 @@ void mainloop()
                 }
             }
         }
+
+        if (tickOut > 0 && SDL_GetTicks() - stime >= tickOut) running = false;
     }
 }
 
@@ -85,7 +89,7 @@ void mainloop()
 
 bool runSw()
 {
-    auto window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
+    auto window = SDL_CreateWindow("ThorVG Example (Software)", tvgexam::windowPos(), tvgexam::windowPos(), WIDTH, HEIGHT, tvgexam::windowFlags(SDL_WINDOW_HIDDEN));
     auto surface = SDL_GetWindowSurface(window);
 
     for (int counter = 0; counter < NUM_PER_LINE * NUM_PER_LINE; ++counter) {
@@ -188,7 +192,7 @@ bool runGl()
         return false;
     };
 
-    auto window = SDL_CreateWindow("ThorVG Example (OpenGL)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+    auto window = SDL_CreateWindow("ThorVG Example (OpenGL)", tvgexam::windowPos(), tvgexam::windowPos(), WIDTH, HEIGHT, tvgexam::windowFlags(SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN));
     if (!window) return failGl();
     auto context = SDL_GL_CreateContext(window);
     if (!context) return failGl();
@@ -273,7 +277,7 @@ void wgCopyTextureToTexture(WGPUDevice device, WGPUTexture src, WGPUTexture dst,
 bool runWg()
 {
 #ifdef TVGEXAMPLE_WGPU_SUPPORTED
-    auto window = SDL_CreateWindow("ThorVG Example (WebGPU)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_HIDDEN);
+    auto window = SDL_CreateWindow("ThorVG Example (WebGPU)", tvgexam::windowPos(), tvgexam::windowPos(), WIDTH, HEIGHT, tvgexam::windowFlags(SDL_WINDOW_HIDDEN));
 
     //Here we create our WebGPU surface from the window!
     SDL_SysWMinfo windowWMInfo;
@@ -358,7 +362,7 @@ bool runWg()
         auto canvas = unique_ptr<tvg::WgCanvas>(tvg::WgCanvas::gen());
 
         //Set the canvas target and draw on it.
-        tvgexam::verify(canvas->target({instance, adapter, device}, renderTarget, SIZE, SIZE, tvg::ColorSpace::ABGR8888, 1));
+        tvgexam::verify(canvas->target(device, instance, renderTarget, SIZE, SIZE, tvg::ColorSpace::ABGR8888, 1));
 
         content(canvas.get());
         if (tvgexam::verify(canvas->draw())) {

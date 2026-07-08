@@ -26,7 +26,10 @@
 #include <fstream>
 #include <iostream>
 #include <cstring>
+#include <cerrno>
 #include <chrono>
+#include <cstdlib>
+#include <limits>
 #include <thorvg-1/thorvg.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_syswm.h>
@@ -61,6 +64,56 @@ namespace tvgexam
 {
 
 bool verify(tvg::Result result, string failMsg = "");
+
+static uint32_t tickOut()
+{
+    auto env = getenv("TICK_OUT");
+    if (!env || *env < '0' || *env > '9') return 0;
+
+    char* end = nullptr;
+    errno = 0;
+    auto value = strtoul(env, &end, 10);
+    if (errno != 0 || *end != '\0' || value == 0 || value > numeric_limits<uint32_t>::max()) return 0;
+
+    return static_cast<uint32_t>(value);
+}
+
+static bool envEquals(const char* env, const char* value)
+{
+    while (*env && *value) {
+        auto c1 = *env++;
+        auto c2 = *value++;
+        if (c1 >= 'A' && c1 <= 'Z') c1 += 'a' - 'A';
+        if (c2 >= 'A' && c2 <= 'Z') c2 += 'a' - 'A';
+        if (c1 != c2) return false;
+    }
+    return *env == '\0' && *value == '\0';
+}
+
+
+static bool fullscreen()
+{
+    auto env = getenv("FULLSCREEN");
+    if (!env) return true;
+
+    if (envEquals(env, "0") || envEquals(env, "false") || envEquals(env, "off") || envEquals(env, "no")) return false;
+    if (envEquals(env, "1") || envEquals(env, "true") || envEquals(env, "on") || envEquals(env, "yes")) return true;
+
+    return true;
+}
+
+
+static Uint32 windowFlags(Uint32 flags)
+{
+    return fullscreen() ? flags | SDL_WINDOW_FULLSCREEN_DESKTOP : flags;
+}
+
+
+static int windowPos()
+{
+    auto displays = SDL_GetNumVideoDisplays();
+    return SDL_WINDOWPOS_CENTERED_DISPLAY(displays > 1 ? 1 : 0);
+}
 
 struct Example
 {
@@ -244,6 +297,7 @@ struct Window
         auto ptime = SDL_GetTicks();
         example->elapsed = 0;
         uint32_t tickCnt = 0;
+        auto tickOut = tvgexam::tickOut();
 
         while (running) {
 
@@ -306,6 +360,7 @@ struct Window
             ptime = ctime;
             ++tickCnt;
 
+            if (tickOut > 0 && tickCnt >= tickOut) running = false;
             if (print) fps(tickCnt, ctime);
         }
     }
@@ -325,7 +380,7 @@ struct SwWindow : Window
     {
         if (!initialized) return;
 
-        window = SDL_CreateWindow("ThorVG Example (Software)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("ThorVG Example (Software)", windowPos(), windowPos(), width, height, windowFlags(SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE));
 
         //Create a Canvas. Use Smart Rendering by default.
         canvas = tvg::SwCanvas::gen();
@@ -383,7 +438,7 @@ struct GlWindow : Window
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
         SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 #endif
-        window = SDL_CreateWindow("ThorVG Example (OpenGL/ES)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE);
+        window = SDL_CreateWindow("ThorVG Example (OpenGL/ES)", windowPos(), windowPos(), width, height, windowFlags(SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE));
         context = SDL_GL_CreateContext(window);
 
         SDL_GL_SetSwapInterval(0);  // disable fps limit
@@ -436,7 +491,7 @@ struct WgWindow : Window
     {
         if (!initialized) return;
 
-        window = SDL_CreateWindow("ThorVG Example (WebGPU)", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_HIDDEN);
+        window = SDL_CreateWindow("ThorVG Example (WebGPU)", windowPos(), windowPos(), width, height, windowFlags(SDL_WINDOW_HIDDEN));
 
         //Here we create our WebGPU surface from the window!
         SDL_SysWMinfo windowWMInfo;
@@ -520,7 +575,7 @@ struct WgWindow : Window
     void resize() override
     {
         //Set the canvas target and draw on it.
-        verify(static_cast<tvg::WgCanvas*>(canvas)->target({instance, adapter, device}, surface, width, height, tvg::ColorSpace::ABGR8888));
+        verify(static_cast<tvg::WgCanvas*>(canvas)->target(device, instance, surface, width, height, tvg::ColorSpace::ABGR8888));
     }
 
     void refresh() override 

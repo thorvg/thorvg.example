@@ -42,6 +42,8 @@ struct UserExample : tvgexam::Example
 
     struct {
         float beginTime;      //tweening begin time
+        float from;           //tweening from frame
+        float to;             //tweening to frame
         bool active = false;  //whether on-tweening or not
     } tween;
 
@@ -78,8 +80,8 @@ struct UserExample : tvgexam::Example
         //tweening trigger time
         tween.beginTime = timestamp();
 
-        //the next state begin frame as the tweening "to" frame
-        lottie->tweenTo(states[stateIdx].begin);
+        tween.from = states[this->stateIdx].begin;
+        tween.to = states[stateIdx].begin;
 
         tween.active = true;
 
@@ -144,7 +146,7 @@ struct UserExample : tvgexam::Example
 
         //perform the tweening effect
         if (progress < 1.0f) {
-            if (lottie->tween(progress) == tvg::Result(0)) {
+            if (lottie->tween(tween.from, tween.to, progress) == tvg::Result(0)) {
                 canvas->update();
                 return true;
             }
