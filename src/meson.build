@@ -101,10 +101,11 @@ lottie_example = '''
 if cc.links(lottie_example, dependencies : thorvg_dep, include_directories : thorvg_inc)
     source_file += [
         'Lottie.cpp',
+        'LottieAssetResolver.cpp',
         'LottieAudio.cpp',
         'LottieExpressions.cpp',
-        'LottieExtension.cpp',
         'LottieInteraction.cpp',
+        'LottieSlot.cpp',
         'LottieTweening.cpp'
     ]
     message('ThorVG Lottie found. Enabled Lottie examples.')
