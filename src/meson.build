@@ -34,6 +34,7 @@ endif
 source_file = [
     'Accessor.cpp',
     'Animation.cpp',
+    'AnimationComposition.cpp',
     'Blending.cpp',
     'BoundingBox.cpp',
     'Clipping.cpp',
