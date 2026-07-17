@@ -83,6 +83,13 @@ struct UserExample : tvgexam::Example
         fill2->colorStops(colorStops2, 2);
         shape2->fill(fill2);
 
+        //Gradient Stroke
+        auto strokeFill2 = tvg::LinearGradient::gen();
+        strokeFill2->linear(-50, -50, 130, 130);
+        strokeFill2->colorStops(colorStops, 3);
+        shape2->strokeWidth(15);
+        shape2->strokeFill(strokeFill2);
+
         shape2->rotate(360 * progress);
         shape2->translate(480 + progress * 300, 480);
 
