@@ -28,6 +28,9 @@
 
 struct UserExample : tvgexam::Example
 {
+    tvg::Shape* shape1 = nullptr;
+    tvg::Shape* shape2 = nullptr;
+
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
         tvg::Fill::ColorStop colorStops1[3];
@@ -45,8 +48,8 @@ struct UserExample : tvgexam::Example
 
         float dashPattern1[2] = {15, 15};
 
-        // linear gradient stroke + linear gradient fill
-        auto shape1 = tvg::Shape::gen();
+        // linear gradient stroke (animated in update()) + linear gradient fill
+        shape1 = tvg::Shape::gen();
         shape1->moveTo(150, 100);
         shape1->lineTo(200, 100);
         shape1->lineTo(200, 150);
@@ -65,11 +68,6 @@ struct UserExample : tvgexam::Example
         shape1->strokeJoin(tvg::StrokeJoin::Miter);
         shape1->strokeCap(tvg::StrokeCap::Butt);
 
-        auto fillStroke1 = tvg::LinearGradient::gen();
-        fillStroke1->linear(100, 100, 250, 250);
-        fillStroke1->colorStops(colorStops1, 3);
-        shape1->strokeFill(fillStroke1);
-
         auto fill1 = tvg::LinearGradient::gen();
         fill1->linear(100, 100, 250, 250);
         fill1->colorStops(colorStops1, 3);
@@ -77,8 +75,8 @@ struct UserExample : tvgexam::Example
 
         canvas->add(shape1);
 
-        // radial gradient stroke + duplicate
-        auto shape2 = tvg::Shape::gen();
+        // radial gradient stroke (animated in update()) + duplicate
+        shape2 = tvg::Shape::gen();
         shape2->appendCircle(600, 175, 100, 60);
         shape2->strokeWidth(80);
 
@@ -122,6 +120,36 @@ struct UserExample : tvgexam::Example
 
         canvas->add(shape5);
 
+        return update(canvas, 0);
+    }
+
+    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    {
+        auto progress = tvgexam::progress(elapsed, 2.0f, true);
+
+        // slide shape1's linear gradient stroke
+        tvg::Fill::ColorStop colorStops1[3];
+        colorStops1[0] = {0, 255, 0, 0, 150};
+        colorStops1[1] = {0.5, 0, 0, 255, 150};
+        colorStops1[2] = {1, 127, 0, 127, 150};
+
+        auto fillStroke1 = tvg::LinearGradient::gen();
+        fillStroke1->linear(300 - 400 * progress, 100, 450 - 400 * progress, 250);
+        fillStroke1->colorStops(colorStops1, 3);
+        shape1->strokeFill(fillStroke1);
+
+        // pulse shape2's radial gradient radius
+        tvg::Fill::ColorStop colorStops2[2];
+        colorStops2[0] = {0.3f, 255, 0, 0, 255};
+        colorStops2[1] = {1, 50, 0, 255, 155};
+
+        auto fillStroke2 = tvg::RadialGradient::gen();
+        fillStroke2->radial(600, 175, 20 + 120 * progress, 600, 175, 0);
+        fillStroke2->colorStops(colorStops2, 2);
+        shape2->strokeFill(fillStroke2);
+
+        canvas->update();
+
         return true;
     }
 };
@@ -133,5 +161,5 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    return tvgexam::main(new UserExample, argc, argv, true);
 }
