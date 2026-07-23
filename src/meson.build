@@ -55,6 +55,7 @@ source_file = [
     'MaskingMethods.cpp',
     'ManyImages.cpp',
     'ManyRects.cpp',
+    'ManyShapes.cpp',
     'MultiCanvas.cpp',
     'Opacity.cpp',
     'Path.cpp',
