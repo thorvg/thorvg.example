@@ -21,10 +21,12 @@
  */
 
 #include <cmath>
+#include <cstdlib>
 #include <memory>
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <cstring>
 #include <chrono>
 #include <thorvg-1/thorvg.h>
@@ -607,8 +609,29 @@ int engine(int argc, char **argv)
     return 0;
 }
 
+void resolution(int argc, char **argv, uint32_t& width, uint32_t& height)
+{
+    // -r [width]x[height]
+    for (int i = 1; i + 1 < argc; ++i) {
+        if (strcmp(argv[i], "-r") != 0) continue;
+        auto value = argv[i + 1];
+        auto separator = strchr(value, 'x');
+        if (separator) {
+            auto w = atoi(value);
+            auto h = atoi(separator + 1);
+            if (w > 0 && h > 0) {
+                width = static_cast<uint32_t>(w);
+                height = static_cast<uint32_t>(h);
+            }
+        }
+        break;
+    }
+}
+
 int main(Example* example, int argc, char **argv, bool clearBuffer = false, uint32_t width = 800, uint32_t height = 800, uint32_t threadsCnt = 4, bool print = false)
 {
+    resolution(argc, argv, width, height);
+
     unique_ptr<Window> window;
 
     switch (engine(argc, argv)) {
