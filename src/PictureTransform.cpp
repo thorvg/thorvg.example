@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 - 2026 ThorVG project. All rights reserved.
+ * Copyright (c) 2021 - 2026 ThorVG project. All rights reserved.
 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,31 +28,36 @@
 
 struct UserExample : tvgexam::Example
 {
+    tvg::Picture* picture = nullptr;
+
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
-        //Add random half-translucent rects with stroking
-        for (int i = 0; i < 2000; ++i) {
-            auto s = tvg::Shape::gen();
-            s->appendRect(rand() % 1600, rand() % 1600, rand() % 100, rand() % 100, rand() % 10, rand() % 10);
-            s->fill(rand() % 255, rand() % 255, rand() % 255, 253 + rand() % 3);
-            s->strokeFill(255, 255, 255);
-            s->strokeWidth(3);
-            canvas->add(s);
-        }
+        //Original
+        picture = tvg::Picture::gen();
+
+        if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/image/scale.jpg"))) return false;
+
+        picture->origin(0.5f, 0.5f);  //center origin
+        picture->translate(w/2, h/2);
+        picture->origin(0.5f, 0.5f);
+        picture->scale(1.5f);
+
+        canvas->add(picture);
+
         return true;
     }
 
     bool update(tvg::Canvas* canvas, uint32_t elapsed) override
     {
-        //change rects' pos and size
-        for (auto p : canvas->paints()) {
-            auto s = static_cast<tvg::Shape*>(p);
-            s->reset();
-            s->appendRect(rand() % 1600, rand() % 1600, rand() % 100, rand() % 100, rand() % 10, rand() % 10);
-        }
-        return canvas->update() == tvg::Result(0);
+        auto progress = tvgexam::progress(elapsed, 3.0f, true);  //play time 3 secs.
+        picture->scale((1.0f - progress) * 1.5f);
+        picture->rotate(360 * progress);
+        canvas->update();
+
+        return true;
     }
 };
+
 
 /************************************************************************/
 /* Entry Point                                                          */
@@ -60,5 +65,5 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 1650, 1650, 4, true);
+    return tvgexam::main(new UserExample, argc, argv, true, 1024, 1024);
 }
