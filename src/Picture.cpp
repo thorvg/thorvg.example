@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 - 2026 ThorVG project. All rights reserved.
+ * Copyright (c) 2026 ThorVG project. All rights reserved.
 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,25 +28,21 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::string input = EXAMPLE_DIR"/lottie/sample.json";
-    unique_ptr<tvg::Animation> animation;
+    std::string input = EXAMPLE_DIR"/svg/logo.svg";
 
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
-        //Animation Controller
-        animation = unique_ptr<tvg::Animation>(tvg::Animation::gen());
-        auto picture = animation->picture();
-        picture->origin(0.5f, 0.5f);  //center origin
-
         //Background
-        auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
-        shape->fill(50, 50, 50);
+        auto bg = tvg::Shape::gen();
+        bg->appendRect(0, 0, w, h);
+        bg->fill(50, 50, 50);
+        canvas->add(bg);
 
-        canvas->add(shape);
+        auto picture = tvg::Picture::gen();
+        picture->origin(0.5f, 0.5f);  //center origin
 
         if (!tvgexam::verify(picture->load(input.c_str()))) return false;
 
@@ -61,19 +57,6 @@ struct UserExample : tvgexam::Example
 
         return true;
     }
-
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
-    {
-        auto progress = tvgexam::progress(elapsed, animation->duration());
-
-        //Update animation frame only when it's changed
-        if (animation->frame(animation->totalFrame() * progress) == tvg::Result(0)) {
-            canvas->update();
-            return true;
-        }
-
-        return false;
-    }
 };
 
 
@@ -87,5 +70,5 @@ int main(int argc, char **argv)
 
     tvgexam::input(argc, argv, example->input);
 
-    return tvgexam::main(example, argc, argv, false, 1024, 1024, 4, true);
+    return tvgexam::main(example, argc, argv, false, 1024, 1024, 4);
 }

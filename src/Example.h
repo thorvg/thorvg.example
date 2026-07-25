@@ -582,25 +582,32 @@ bool verify(tvg::Result result, string failMsg)
     return true;
 }
 
+void input(int argc, char **argv, string& out)
+{
+    // -i <filepath>
+    for (int i = 1; i + 1 < argc; ++i) {
+        if (strcmp(argv[i], "-i") == 0) {
+            out = argv[i + 1];
+            break;
+        }
+    }
+}
 
 int main(Example* example, int argc, char **argv, bool clearBuffer = false, uint32_t width = 800, uint32_t height = 800, uint32_t threadsCnt = 4, bool print = false)
 {
+    // render backend
     auto engine = 0; //0: sw, 1: gl, 2: wg
 
-    if (argc > 1) {
-        if (!strcmp(argv[1], "gl")) engine = 1;
-        if (!strcmp(argv[1], "wg")) engine = 2;
+    for (int i = 1; i < argc; ++i) {
+        if (!strcmp(argv[i], "gl")) engine = 1;
+        if (!strcmp(argv[i], "wg")) engine = 2;
     }
 
     unique_ptr<Window> window;
 
-    if (engine == 0) {
-        window = unique_ptr<Window>(new SwWindow(example, width, height, threadsCnt));
-    } else if (engine == 1) {
-        window = unique_ptr<Window>(new GlWindow(example, width, height, threadsCnt));
-    } else if (engine == 2) {
-        window = unique_ptr<Window>(new WgWindow(example, width, height, threadsCnt));
-    }
+    if (engine == 0) window = unique_ptr<Window>(new SwWindow(example, width, height, threadsCnt));
+    else if (engine == 1) window = unique_ptr<Window>(new GlWindow(example, width, height, threadsCnt));
+    else if (engine == 2) window = unique_ptr<Window>(new WgWindow(example, width, height, threadsCnt));
 
     window->clearBuffer = clearBuffer;
     window->print = print;
