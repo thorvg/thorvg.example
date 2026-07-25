@@ -16,8 +16,8 @@ if /I not "%ARG%"=="gl" if /I not "%ARG%"=="sw" if /I not "%ARG%"=="wg" (
 )
 
 for %%F in ("*.exe") do (
-  echo Launching %%~nxF %ARG%
-  start "" "%%~fF" %ARG%
+  echo Launching %%~nxF -e %ARG%
+  start "" "%%~fF" -e %ARG%
   timeout /t 2 /nobreak >nul
   rem Try to close it, then force-close if needed
   taskkill /im "%%~nxF" /t >nul 2>&1

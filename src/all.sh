@@ -20,7 +20,7 @@ do
 	fi
 
 	echo -e "Execute: "${GREEN}$EXAMPLE${NC}" for "$INTERVAL" second(s)"
-	$EXAMPLE $ENGINE &
+	$EXAMPLE -e $ENGINE &
 	EXAMPLE_PID=$!
 	sleep $INTERVAL
 	kill -s SIGTERM $EXAMPLE_PID
