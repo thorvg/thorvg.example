@@ -29,11 +29,11 @@ ninja -C builddir
 ### Run
 Once the build is complete, you can run each example binary directly from the builddir folder.
 
-To run an example with the GL or WGPU engine, pass 'gl' or 'wg' as a command-line argument. By default, the examples run with the software rendering engine.
+To run an example with the GL or WGPU engine, pass '-e gl' or '-e wg' as a command-line argument. By default, the examples run with the cpu rendering engine.
 ```
-./builddir/src/Shapes gl    # Runs with OpenGL/ES
-./builddir/src/Shapes wg    # Runs with WebGPU
-./builddir/src/Shapes       # Runs with Software (default)
+./builddir/src/Shapes          # Runs with Software (default)
+./builddir/src/Shapes -e gl    # Runs with OpenGL/ES
+./builddir/src/Shapes -e wg    # Runs with WebGPU
 ```
 
 <img width="1997" height="auto" alt="image" src="https://github.com/user-attachments/assets/90df1659-2ad1-4a81-89c9-33f6cc7a467e" />
