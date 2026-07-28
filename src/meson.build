@@ -111,6 +111,21 @@ else
     message('ThorVG Lottie not found. Skipping Lottie examples.')
 endif
 
+# Media Examples
+media_example = '''
+    #include <thorvg_media.h>
+    int main(int argc, char **argv) {
+        return tvg::Video::gen() ? 0 : 1;
+    }
+'''
+
+if cc.links(media_example, dependencies : thorvg_dep, include_directories : thorvg_inc)
+    source_file += ['Video.cpp']
+    message('ThorVG Media found. Enabled Video example.')
+else
+    message('ThorVG Media not found. Skipping Video example.')
+endif
+
 # CAPI Examples
 if cc.has_function('tvg_shape_new', prefix: '#include <thorvg_capi.h>', include_directories: thorvg_inc, dependencies: thorvg_dep)
     source_file += ['Capi.cpp']
