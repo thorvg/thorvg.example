@@ -265,6 +265,36 @@ struct UserExample : tvgexam::Example
             slots.push_back(std::move(slot));
         }
 
+        //slot (bezier path)
+        {
+            auto slot = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
+            auto picture = slot->picture();
+            if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/slot13.json"))) return false;
+
+            const char* slotJson = R"({"bezier_path":{"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":0,"s":[{"c":true,"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[0,-180],[180,0],[0,180],[-180,0]]}]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":90,"s":[{"c":true,"i":[[-99.4,0],[0,-99.4],[99.4,0],[0,99.4]],"o":[[99.4,0],[0,99.4],[-99.4,0],[0,-99.4]],"v":[[0,-180],[180,0],[0,180],[-180,0]]}]},{"t":180,"s":[{"c":true,"i":[[0,0],[0,0],[0,0],[0,0]],"o":[[0,0],[0,0],[0,0],[0,0]],"v":[[0,-180],[180,0],[0,180],[-180,0]]}]}]}}})";
+            auto slotId = slot->gen(slotJson);
+            if (!tvgexam::verify(slot->apply(slotId))) return false;
+
+            sizing(picture, 13);
+            canvas->add(picture);
+            slots.push_back(std::move(slot));
+        }
+
+        //slot (time remap)
+        {
+            auto slot = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
+            auto picture = slot->picture();
+            if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/slot14.json"))) return false;
+
+            const char* slotJson = R"({"time_remap":{"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":0,"s":[0]},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"t":90,"s":[3]},{"t":180,"s":[0]}]}}})";
+            auto slotId = slot->gen(slotJson);
+            if (!tvgexam::verify(slot->apply(slotId))) return false;
+
+            sizing(picture, 14);
+            canvas->add(picture);
+            slots.push_back(std::move(slot));
+        }
+
         return true;
     }
 };
