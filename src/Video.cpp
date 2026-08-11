@@ -27,10 +27,15 @@
 /* ThorVG Drawing Contents                                              */
 /************************************************************************/
 
+#define NUM_PER_ROW 2
+#define NUM_PER_COL 2
+
 struct UserExample : tvgexam::Example
 {
     std::string input = EXAMPLE_DIR"/media/video.mp4";
-    unique_ptr<tvg::Video> video;
+    vector<char> data;
+    unique_ptr<tvg::Video> videos[2];  //0: file-based, 1: memory-based
+    uint32_t w, h;
     bool playing = true;
     bool paused = false;
 
@@ -43,6 +48,19 @@ struct UserExample : tvgexam::Example
                 "  3: Volume down\n";
     }
 
+    void sizing(tvg::Picture* picture, uint32_t counter)
+    {
+        auto cellW = static_cast<float>(this->w) / NUM_PER_ROW;
+        auto cellH = static_cast<float>(this->h) / NUM_PER_COL;
+
+        float pw, ph;
+        picture->size(&pw, &ph);
+        auto scale = (pw / ph > cellW / cellH) ? cellW / pw : cellH / ph;
+        picture->origin(0.5f, 0.5f);
+        picture->scale(scale);
+        picture->translate((counter % NUM_PER_ROW + 0.5f) * cellW, (counter / NUM_PER_ROW + 0.5f) * cellH);
+    }
+
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
         // background
@@ -51,26 +69,41 @@ struct UserExample : tvgexam::Example
         bg->fill(0, 0, 0);
         canvas->add(bg);
 
-        // video player
-        video = unique_ptr<tvg::Video>(tvg::Video::gen());
-        video->loop(true);
+        this->w = w;
+        this->h = h;
 
-        auto picture = video->picture();
-        picture->origin(0.5f, 0.5f);
+        //file-source video
+        {
+            videos[0] = unique_ptr<tvg::Video>(tvg::Video::gen());
+            auto picture = videos[0]->picture();
+            if (!tvgexam::verify(picture->load(input.c_str()))) return false;
+            if (!tvgexam::verify(videos[0]->loop(true))) return false;
+            sizing(picture, 0);
+            canvas->add(picture);
+        }
 
-        if (!tvgexam::verify(picture->load(input.c_str()))) return false;
+        //data-source video
+        {
+            ifstream file(input, ios::binary | ios::ate);
+            if (!file.is_open()) return false;
+            auto pos = file.tellg();
+            if (pos < 0 || pos > UINT32_MAX) return false;
+            auto size = static_cast<uint32_t>(pos);
+            data.resize(size);
+            file.seekg(0, ios::beg);
+            if (!file.read(data.data(), size)) return false;
 
-        // video scaling preserving its aspect ratio
-        float w2, h2;
-        picture->size(&w2, &h2);
-        auto scale = (w2 / h2 > float(w) / float(h)) ? float(w) / w2 : float(h) / h2;
-        picture->scale(scale);
-        picture->translate(float(w) * 0.5f, float(h) * 0.5f);
+            videos[1] = unique_ptr<tvg::Video>(tvg::Video::gen());
+            auto picture = videos[1]->picture();
+            if (!tvgexam::verify(picture->load(data.data(), size, "mp4"))) return false;
+            if (!tvgexam::verify(videos[1]->loop(true))) return false;
+            if (!tvgexam::verify(videos[1]->mute(true))) return false;
+            sizing(picture, 3);
+            canvas->add(picture);
+        }
 
-        canvas->add(picture);
-
-        // play the video
-        if (!tvgexam::verify(video->play())) return false;
+        if (!tvgexam::verify(videos[0]->play())) return false;
+        if (!tvgexam::verify(videos[1]->play())) return false;
 
         return true;
     }
@@ -78,36 +111,39 @@ struct UserExample : tvgexam::Example
     bool keydown(tvg::Canvas* canvas, int32_t key) override
     {
         auto print = [this]() {
-            cout << "Video: " << (playing ? (paused ? "paused" : "playing") : "stopped") << ", volume: " << video->volume() << endl;
+            cout << "Videos: " << (playing ? (paused ? "paused" : "playing") : "stopped") << ", file volume: " << videos[0]->volume() << ", memory: muted" << endl;
         };
 
         switch (key) {
             case SDLK_0:
                 if (playing) {  // play or stop
-                    if (!tvgexam::verify(video->stop())) return false;
+                    if (!tvgexam::verify(videos[0]->stop())) return false;
+                    if (!tvgexam::verify(videos[1]->stop())) return false;
                     playing = false;
                     paused = false;
                 } else {
-                    if (!tvgexam::verify(video->play())) return false;
+                    if (!tvgexam::verify(videos[0]->play())) return false;
+                    if (!tvgexam::verify(videos[1]->play())) return false;
                     playing = true;
                 }
                 print();
                 return true;
             case SDLK_1:    // pause or resume
                 if (!playing) return false;
-                if (!tvgexam::verify(paused ? video->play() : video->pause())) return false;
+                if (!tvgexam::verify(paused ? videos[0]->play() : videos[0]->pause())) return false;
+                if (!tvgexam::verify(paused ? videos[1]->play() : videos[1]->pause())) return false;
                 paused = !paused;
                 print();
                 return true;
             case SDLK_2: {  // volume up
-                auto volume = video->volume();
-                if (!tvgexam::verify(video->volume(volume < 0.9f ? volume + 0.1f : 1.0f))) return false;
+                auto volume = videos[0]->volume();
+                if (!tvgexam::verify(videos[0]->volume(volume < 0.9f ? volume + 0.1f : 1.0f))) return false;
                 print();
                 return true;
             }
             case SDLK_3: {  // volume down
-                auto volume = video->volume();
-                if (!tvgexam::verify(video->volume(volume > 0.1f ? volume - 0.1f : 0.0f))) return false;
+                auto volume = videos[0]->volume();
+                if (!tvgexam::verify(videos[0]->volume(volume > 0.1f ? volume - 0.1f : 0.0f))) return false;
                 print();
                 return true;
             }
