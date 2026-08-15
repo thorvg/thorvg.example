@@ -32,6 +32,7 @@
 struct UserExample : tvgexam::Example
 {
     std::vector<unique_ptr<tvg::Animation>> animations;
+    std::string input = EXAMPLE_DIR"/lottie";
     uint32_t w, h;
     uint32_t size;
 
@@ -92,7 +93,7 @@ struct UserExample : tvgexam::Example
         this->h = h;
         this->size = w / NUM_PER_ROW;
 
-        this->scandir(EXAMPLE_DIR"/lottie");
+        this->scandir(input.c_str());
 
         //Run animation loop
         for (auto& animation : animations) {
@@ -110,5 +111,9 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1280, 1280, 4, true);
+    auto example = new UserExample;
+
+    tvgexam::input(argc, argv, example->input);
+
+    return tvgexam::main(example, argc, argv, false, 1280, 1280, 4, true);
 }

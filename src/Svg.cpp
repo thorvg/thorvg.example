@@ -32,6 +32,7 @@
 struct UserExample : tvgexam::Example
 {
     std::vector<tvg::Picture*> pictures;
+    std::string input = EXAMPLE_DIR"/svg";
     uint32_t w, h;
     uint32_t size;
 
@@ -79,7 +80,7 @@ struct UserExample : tvgexam::Example
         this->h = h;
         this->size = w / NUM_PER_ROW;
 
-        this->scandir(EXAMPLE_DIR"/svg");
+        this->scandir(input.c_str());
 
         /* This showcase demonstrates the asynchronous loading of tvg.
            For this, pictures are added at a certain sync time.
@@ -102,5 +103,9 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1280, 1280);
+    auto example = new UserExample;
+
+    tvgexam::input(argc, argv, example->input);
+
+    return tvgexam::main(example, argc, argv, false, 1280, 1280);
 }
