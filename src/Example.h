@@ -211,7 +211,7 @@ struct Window
 
         using clock = std::chrono::steady_clock;
 
-        static double ema_dt = 1 / 60;             // Initial value assuming 60fps (seconds)
+        static double ema_dt = 1.0 / 60.0;             // Initial value assuming 60fps (seconds)
         static const double half_life = 0.25;      // Half-life of 0.25 seconds (lightly tuned)
         static auto prev = clock::now();
 
