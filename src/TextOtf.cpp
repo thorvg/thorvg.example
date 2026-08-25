@@ -41,7 +41,7 @@ struct UserExample : tvgexam::Example
         //Otherwise, you can immediately unload the font data.
         //Please check Text::unload() APIs.
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/DMSans.otf"))) return false;
-        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/Pretendard.otf"))) return false;
+        if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NotoSerifJP-Regular.otf"))) return false;
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NanumGothicCoding.otf"))) return false;
 
         //Load from memory
@@ -106,7 +106,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text6);
 
         auto text7 = tvg::Text::gen();
-        text7->font("Pretendard");
+        text7->font("NotoSerifJP-Regular");
         text7->size(15);
         text7->text("Transformed Text - 30'");
         text7->fill(0, 0, 0);
@@ -115,7 +115,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text7);
 
         auto text8 = tvg::Text::gen();
-        text8->font("Pretendard");
+        text8->font("NotoSerifJP-Regular");
         text8->size(15);
         text8->fill(0, 0, 0);
         text8->text("Transformed Text - 90'");
@@ -124,7 +124,7 @@ struct UserExample : tvgexam::Example
         canvas->add(text8);
 
         auto text9 = tvg::Text::gen();
-        text9->font("Pretendard");
+        text9->font("NotoSerifJP-Regular");
         text9->size(15);
         text9->fill(0, 0, 0);
         text9->text("Transformed Text - 180'");
@@ -136,9 +136,9 @@ struct UserExample : tvgexam::Example
         float x, y, w2, h2;
 
         auto text10 = tvg::Text::gen();
-        text10->font("Pretendard");
-        text10->size(50);
-        text10->text("Linear Text");
+        text10->font("NotoSerifJP-Regular");
+        text10->size(40);
+        text10->text("NotoSerifJP-Regular");
         text10->bounds(&x, &y, &w2, &h2);
 
         //LinearGradient
