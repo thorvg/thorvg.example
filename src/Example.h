@@ -430,6 +430,9 @@ struct WgWindow : Window
     WGPUSurface surface;
     WGPUAdapter adapter;
     WGPUDevice device;
+#if defined(SDL_VIDEO_DRIVER_COCOA)
+    CAMetalLayer* layer = nullptr;
+#endif
 
     WgWindow(Example* example, uint32_t width, uint32_t height, uint32_t threadsCnt) : Window(example, width, height, threadsCnt)
     {
@@ -448,7 +451,7 @@ struct WgWindow : Window
 
         #if defined(SDL_VIDEO_DRIVER_COCOA)
             [windowWMInfo.info.cocoa.window.contentView setWantsLayer:YES];
-            auto layer = [CAMetalLayer layer];
+            layer = [CAMetalLayer layer];
             [windowWMInfo.info.cocoa.window.contentView setLayer:layer];
 
             WGPUSurfaceSourceMetalLayer surfaceNativeDesc = {
@@ -518,6 +521,11 @@ struct WgWindow : Window
 
     void resize() override
     {
+#if defined(SDL_VIDEO_DRIVER_COCOA)
+        // Keep the Metal drawable aligned with ThorVG's logical render target.
+        [layer setContentsScale:1.0];
+        [layer setDrawableSize:CGSizeMake(width, height)];
+#endif
         //Set the canvas target and draw on it.
         verify(static_cast<tvg::WgCanvas*>(canvas)->target({instance, adapter, device}, surface, width, height, tvg::ColorSpace::ABGR8888));
     }
