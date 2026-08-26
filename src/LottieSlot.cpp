@@ -81,13 +81,20 @@ struct UserExample : tvgexam::Example
             slots.push_back(std::move(slot));
         }
 
-        //slot (gradient)
+        //slot (gradient: color stops, opacity, start, end, height, angle)
         {
             auto slot = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
             auto picture = slot->picture();
             if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/extensions/slot1.json"))) return false;
 
-            const char* slotJson = R"({"gradient_fill":{"p":{"p":2,"k":{"k":[0,0.1,0.1,0.2,1,1,0.1,0.2,0,0,1,1]}}}})";
+            const char* slotJson = R"({
+                "gradient_fill":{"p":{"p":2,"k":{"k":[0,0.1,0.1,0.2,1,1,0.1,0.2,0,0,1,1]}}},
+                "gradient_opacity":{"p":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"s":[100],"t":0},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"s":[30],"t":60},{"s":[100],"t":120}]}},
+                "gradient_start":{"p":{"a":1,"k":[{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"s":[-80,-40],"t":0},{"i":{"x":0.833,"y":0.833},"o":{"x":0.167,"y":0.167},"s":[80,40],"t":60},{"s":[-80,-40],"t":120}]}},
+                "gradient_end":{"p":{"a":0,"k":[110,0]}},
+                "gradient_height":{"p":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"s":[0],"t":0},{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"s":[90],"t":60},{"s":[0],"t":120}]}},
+                "gradient_angle":{"p":{"a":1,"k":[{"i":{"x":[0.833],"y":[0.833]},"o":{"x":[0.167],"y":[0.167]},"s":[0],"t":0},{"s":[360],"t":120}]}}
+            })";
             auto slotId = slot->gen(slotJson);
             if (!tvgexam::verify(slot->apply(slotId))) return false;
 
