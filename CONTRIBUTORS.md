@@ -15,6 +15,7 @@ For definitions and responsibilities of each project role, see [Roles & Responsi
 - Sergii Liebodkin @SergeyLebedkin
 - Jinny You @tinyjin
 - Jay WenJie @wenjieshen
+- SoonGeon Noh @Nor-s
 
 ## Contributors
 - Lucas Niu @fall2019
