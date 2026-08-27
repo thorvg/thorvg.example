@@ -11,6 +11,8 @@
 </p>
 
 ThorVG Example provides a wide range of example codes. Those examples demonstrate how to use ThorVG's APIs to render vector graphics, handle images, and play animations. Each example is designed to highlight specific features and help developers get started quickly with ThorVG. <br />
+
+<img width="1997" height="auto" alt="image" src="https://github.com/user-attachments/assets/90df1659-2ad1-4a81-89c9-33f6cc7a467e" />
  
 ## How To
 This section details the steps required to configure the environment for installing ThorVG Example. Please note that [ThorVG](https://github.com/thorvg/thorvg) and [SDL](https://www.libsdl.org/) must be installed on your system before building the examples.
@@ -31,9 +33,16 @@ Once the build is complete, you can run each example binary directly from the bu
 
 To run an example with the GL or WGPU engine, pass '-e gl' or '-e wg' as a command-line argument. By default, the examples run with the cpu rendering engine.
 ```
-./builddir/src/Shapes          # Runs with Software (default)
-./builddir/src/Shapes -e gl    # Runs with OpenGL/ES
-./builddir/src/Shapes -e wg    # Runs with WebGPU
+./builddir/src/Shapes                  # Runs with Software (default)
+./builddir/src/Shapes -e gl            # Runs with OpenGL/ES
+./builddir/src/Shapes -e wg            # Runs with WebGPU
+./builddir/src/Shapes -r 1200x1200     # Runs with a 1200x1200 window
+./builddir/src/Picture -i <input_path> # Loads and renders the given asset
+```
+Options can be combined when applicable:
+
+```
+./builddir/src/Picture -e wg -r 1200x1200 -i <input_path>
 ```
 
-<img width="1997" height="auto" alt="image" src="https://github.com/user-attachments/assets/90df1659-2ad1-4a81-89c9-33f6cc7a467e" />
+This runs the Picture example using the WebGPU engine with a 1200x1200 window and the specified input asset.
