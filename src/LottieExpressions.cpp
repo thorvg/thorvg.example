@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <thorvg-1/thorvg_lottie.h>
 #include "Example.h"
 
 /************************************************************************/
@@ -111,5 +112,10 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
+    if (!tvg::LottieAnimation::expressions()) {
+        cout << "Lottie expressions are not supported in this build." << endl;
+        return 0;
+    }
+
     return tvgexam::main(new UserExample, argc, argv, false, 1024, 1024, 4, true);
 }
