@@ -101,12 +101,27 @@ if cc.links(lottie_example, dependencies : thorvg_dep, include_directories : tho
         'Lottie.cpp',
         'LottieAssetResolver.cpp',
         'LottieAudio.cpp',
-        'LottieExpressions.cpp',
-        'LottieInteraction.cpp',
-        'LottieSlot.cpp',
         'LottieTweening.cpp'
     ]
     message('ThorVG Lottie found. Enabled Lottie examples.')
+
+    lottie_expressions_example = '''
+        #include <thorvg_lottie.h>
+        int main(int argc, char **argv) {
+            return tvg::LottieAnimation::expressions() ? 0 : 1;
+        }
+    '''
+
+    if cc.links(lottie_expressions_example, dependencies : thorvg_dep, include_directories : thorvg_inc)
+        source_file += [
+            'LottieExpressions.cpp',
+            'LottieInteraction.cpp',
+            'LottieSlot.cpp'
+        ]
+        message('ThorVG Lottie expressions found. Enabled Lottie expression examples.')
+    else
+        message('ThorVG Lottie expressions not found. Skipping Lottie expression examples.')
+    endif
 else
     message('ThorVG Lottie not found. Skipping Lottie examples.')
 endif
