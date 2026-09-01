@@ -23,3 +23,4 @@ For definitions and responsibilities of each project role, see [Roles & Responsi
 - Elliott Sales de Andrade @QuLogic
 - Fabian Blatz @faxe1008
 - Jakub Marcowski @Chubercik
+- Duram Kim @alpakaDurumi
