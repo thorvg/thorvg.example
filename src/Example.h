@@ -446,34 +446,57 @@ struct WgWindow : Window
         WGPUInstanceDescriptor desc{};
         instance = wgpuCreateInstance(&desc);
 
-        #if defined(SDL_VIDEO_DRIVER_COCOA)
-            [windowWMInfo.info.cocoa.window.contentView setWantsLayer:YES];
-            auto layer = [CAMetalLayer layer];
-            [windowWMInfo.info.cocoa.window.contentView setLayer:layer];
+        // windowWMInfo.subsystem tells which member of the windowWMInfo.info union is valid.
+        union {
+            WGPUSurfaceSourceMetalLayer cocoa;
+            WGPUSurfaceSourceXlibWindow x11;
+            WGPUSurfaceSourceWaylandSurface wl;
+            WGPUSurfaceSourceWindowsHWND win;
+        } surfaceNativeDesc{};
 
-            WGPUSurfaceSourceMetalLayer surfaceNativeDesc = {
-                .chain = {nullptr, WGPUSType_SurfaceSourceMetalLayer},
-                .layer = layer
-            };
-        #elif defined(SDL_VIDEO_DRIVER_X11)
-            WGPUSurfaceSourceXlibWindow surfaceNativeDesc = {
-                .chain = {nullptr, WGPUSType_SurfaceSourceXlibWindow},
-                .display = windowWMInfo.info.x11.display,
-                .window = windowWMInfo.info.x11.window
-            };
-        #elif defined(SDL_VIDEO_DRIVER_WAYLAND)
-        WGPUSurfaceSourceWaylandSurface surfaceNativeDesc = {
-                .chain = {nullptr, WGPUSType_SurfaceSourceWaylandSurface},
-                .display = windowWMInfo.info.wl.display,
-                .surface = windowWMInfo.info.wl.surface
-            };
-        #elif defined(SDL_VIDEO_DRIVER_WINDOWS)
-            WGPUSurfaceSourceWindowsHWND surfaceNativeDesc = {
-                .chain = {nullptr, WGPUSType_SurfaceSourceWindowsHWND},
-                .hinstance = GetModuleHandle(nullptr),
-                .hwnd = windowWMInfo.info.win.window
-            };
+        switch (windowWMInfo.subsystem) {
+        #if defined(SDL_VIDEO_DRIVER_COCOA)
+            case SDL_SYSWM_COCOA: {
+                [windowWMInfo.info.cocoa.window.contentView setWantsLayer:YES];
+                auto layer = [CAMetalLayer layer];
+                [windowWMInfo.info.cocoa.window.contentView setLayer:layer];
+
+                surfaceNativeDesc.cocoa = {
+                    .chain = {nullptr, WGPUSType_SurfaceSourceMetalLayer},
+                    .layer = layer
+                };
+                break;
+            }
         #endif
+        #if defined(SDL_VIDEO_DRIVER_X11)
+            case SDL_SYSWM_X11:
+                surfaceNativeDesc.x11 = {
+                    .chain = {nullptr, WGPUSType_SurfaceSourceXlibWindow},
+                    .display = windowWMInfo.info.x11.display,
+                    .window = windowWMInfo.info.x11.window
+                };
+                break;
+        #endif
+        #if defined(SDL_VIDEO_DRIVER_WAYLAND)
+            case SDL_SYSWM_WAYLAND:
+                surfaceNativeDesc.wl = {
+                    .chain = {nullptr, WGPUSType_SurfaceSourceWaylandSurface},
+                    .display = windowWMInfo.info.wl.display,
+                    .surface = windowWMInfo.info.wl.surface
+                };
+                break;
+        #endif
+        #if defined(SDL_VIDEO_DRIVER_WINDOWS)
+            case SDL_SYSWM_WINDOWS:
+                surfaceNativeDesc.win = {
+                    .chain = {nullptr, WGPUSType_SurfaceSourceWindowsHWND},
+                    .hinstance = GetModuleHandle(nullptr),
+                    .hwnd = windowWMInfo.info.win.window
+                };
+                break;
+        #endif
+            default: break;
+        }
 
         // create surface
         WGPUSurfaceDescriptor surfaceDesc{};
