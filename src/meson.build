@@ -37,6 +37,7 @@ source_file = [
     'Blending.cpp',
     'BoundingBox.cpp',
     'Clipping.cpp',
+    'ConicGradient.cpp',
     'CustomTransform.cpp',
     'DataLoad.cpp',
     'DirectUpdate.cpp',
