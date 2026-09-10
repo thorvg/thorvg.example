@@ -28,6 +28,15 @@
 
 struct UserExample : tvgexam::Example
 {
+    void add(tvg::Canvas* canvas, tvg::Shape* shape, float x, float y, float r)
+    {
+        auto rotated = shape->duplicate();
+        //Rotate around the square center and move down to the second row.
+        rotated->transform({0, -1, x + y + 2.0f * r, 1,  0, y - x + 2.0f * r + 20.0f, 0,  0, 1});
+        canvas->add(shape);
+        canvas->add(rotated);
+    }
+
     bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
     {
         const int colorCnt = 4;
@@ -52,7 +61,7 @@ struct UserExample : tvgexam::Example
             fill1->spread(tvg::FillSpread::Pad);
             shape1->fill(fill1);
 
-            canvas->add(shape1);
+            add(canvas, shape1, x1, y1, r);
 
             //Reflect
             x1 = 280.0f;
@@ -65,7 +74,7 @@ struct UserExample : tvgexam::Example
             fill2->spread(tvg::FillSpread::Reflect);
             shape2->fill(fill2);
 
-            canvas->add(shape2);
+            add(canvas, shape2, x1, y1, r);
 
             //Repeat
             x1 = 540.0f;
@@ -78,12 +87,12 @@ struct UserExample : tvgexam::Example
             fill3->spread(tvg::FillSpread::Repeat);
             shape3->fill(fill3);
 
-            canvas->add(shape3);
+            add(canvas, shape3, x1, y1, r);
         }
 
         //Linear grad
         {
-            float x1, y1 = 480.0f, r = 120.0f;
+            float x1, y1 = 680.0f, r = 120.0f;
 
             //Pad
             x1 = 20.0f;
@@ -96,7 +105,7 @@ struct UserExample : tvgexam::Example
             fill1->spread(tvg::FillSpread::Pad);
             shape1->fill(fill1);
 
-            canvas->add(shape1);
+            add(canvas, shape1, x1, y1, r);
 
             //Reflect
             x1 = 280.0f;
@@ -109,7 +118,7 @@ struct UserExample : tvgexam::Example
             fill2->spread(tvg::FillSpread::Reflect);
             shape2->fill(fill2);
 
-            canvas->add(shape2);
+            add(canvas, shape2, x1, y1, r);
 
             //Repeat
             x1 = 540.0f;
@@ -122,7 +131,7 @@ struct UserExample : tvgexam::Example
             fill3->spread(tvg::FillSpread::Repeat);
             shape3->fill(fill3);
 
-            canvas->add(shape3);
+            add(canvas, shape3, x1, y1, r);
 
             return true;
         }
@@ -136,5 +145,5 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    return tvgexam::main(new UserExample, argc, argv, false, 800, 1260);
 }
