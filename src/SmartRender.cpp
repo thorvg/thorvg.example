@@ -41,9 +41,13 @@ struct UserExample : tvgexam::Example
 
     uint32_t w, h;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
-        srand(100);
+        w = size.w;
+        h = size.h;
+        std::srand(100);
 
         auto city = tvg::Picture::gen();
         city->load(EXAMPLE_DIR"/image/particle.jpg");
@@ -54,23 +58,23 @@ struct UserExample : tvgexam::Example
         cloud1->opacity(60);
         canvas->add(cloud1);
 
-        float size;
-        cloud1->size(&size, nullptr);
-        clouds.push_back({cloud1, 0, 0, 0.25f, size});
+        float cloudWidth;
+        cloud1->size(&cloudWidth, nullptr);
+        clouds.push_back({cloud1, 0, 0, 0.25f, cloudWidth});
 
         auto cloud2 = cloud1->duplicate();
         cloud2->opacity(30);
         cloud2->translate(400, 100);
         canvas->add(cloud2);
 
-        clouds.push_back({cloud2, 400, 100, 0.125f, size});
+        clouds.push_back({cloud2, 400, 100, 0.125f, cloudWidth});
 
         auto cloud3 = cloud1->duplicate();
         cloud3->opacity(20);
         cloud3->translate(1200, 200);
         canvas->add(cloud3);
 
-        clouds.push_back({cloud3, 1200, 200, 0.075f, size});
+        clouds.push_back({cloud3, 1200, 200, 0.075f, cloudWidth});
 
         auto darkness = tvg::Shape::gen();
         darkness->appendRect(0, 0, w, h);
@@ -78,26 +82,24 @@ struct UserExample : tvgexam::Example
         canvas->add(darkness);
 
         //rain drops
-        size = w / COUNT;
+        auto spacing = w / COUNT;
         raindrops.reserve(COUNT);
 
         for (int i = 0; i < COUNT; ++i) {
             auto shape = tvg::Shape::gen();
-            float x = size * i;
-            raindrops.push_back({shape, x, float(rand()%h), 10 + float(rand() % 100) * 0.1f, 0 /* unused */});
-            shape->appendRect(0, 0, 1, rand() % 15 + size);
-            shape->fill(255, 255, 255, 55 + rand() % 100);
+            float x = spacing * i;
+            raindrops.push_back({shape, x, float(std::rand()%h), 10 + float(std::rand() % 100) * 0.1f, 0 /* unused */});
+            shape->appendRect(0, 0, 1, std::rand() % 15 + spacing);
+            shape->fill(255, 255, 255, 55 + std::rand() % 100);
             canvas->add(shape);
         }
-
-        this->w = w;
-        this->h = h;
 
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         for (auto& p : raindrops) {
             p.y += p.speed;
             if (p.y > h) {
@@ -119,12 +121,13 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 2440, 1280, 0, true);
+    auto params = tvgexam::options(argc, argv, {2440, 1280});
+    params.threads = 0;  // TODO: Single-threaded rendering is faster for this example... ?
+    return tvgexam::run(new UserExample(params), params);
 }

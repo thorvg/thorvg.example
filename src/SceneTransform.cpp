@@ -28,16 +28,19 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         return update(canvas, 0);
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         if (!tvgexam::verify(canvas->remove())) return false;
 
-        auto progress = tvgexam::progress(elapsed, 2.0f, true);  //play time 2 sec.
+        auto progress = tvg::toolkit::progress(elapsed, 2.0f, true);  // play time 2 sec.
 
         //Create a Scene1
         auto scene = tvg::Scene::gen();
@@ -120,12 +123,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 960, 960);
+    auto params = tvgexam::options(argc, argv, {960, 960});
+    return tvgexam::run(new UserExample(params), params);
 }

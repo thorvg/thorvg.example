@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <vector>
 #include "Example.h"
 
 /************************************************************************/
@@ -32,19 +33,22 @@
 struct UserExample : tvgexam::Example
 {
     std::vector<tvg::Picture*> pictures;
-    std::string input = EXAMPLE_DIR"/svg";
-    uint32_t w, h;
-    uint32_t size;
+    std::string input = EXAMPLE_DIR "/svg";
 
     int counter = 0;
+
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
+    {
+        tvgexam::filepath(params, input);  // -i <filepath>
+    }
 
     void populate(const char* path) override
     {
         if (counter >= NUM_PER_ROW * NUM_PER_COL) return;
 
         //ignore if not svg.
-        const char *ext = path + strlen(path) - 3;
-        if (strcmp(ext, "svg")) return;
+        const char *ext = path + std::strlen(path) - 3;
+        if (std::strcmp(ext, "svg")) return;
 
         auto picture = tvg::Picture::gen();
         picture->origin(0.5f, 0.5f);
@@ -52,35 +56,33 @@ struct UserExample : tvgexam::Example
         if (!tvgexam::verify(picture->load(path))) return;
 
         //image scaling preserving its aspect ratio
+        const auto& size = this->size();
+        auto cellSize = size.w / NUM_PER_ROW;
         float w, h;
         picture->size(&w, &h);
-        picture->scale((w > h) ? size / w : size / h);
-        picture->translate((counter % NUM_PER_ROW) * size + size / 2, (counter / NUM_PER_ROW) * (this->h / NUM_PER_COL) + size / 2);
+        picture->scale((w > h) ? cellSize / w : cellSize / h);
+        picture->translate((counter % NUM_PER_ROW) * cellSize + cellSize / 2, (counter / NUM_PER_ROW) * (size.h / NUM_PER_COL) + cellSize / 2);
 
         pictures.push_back(picture);
 
-        cout << "SVG: " << path << endl;
+        std::cout << "SVG: " << path << std::endl;
 
         counter++;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(150, 150, 150);
 
         canvas->add(shape);
 
-        this->w = w;
-        this->h = h;
-        this->size = w / NUM_PER_ROW;
-
-        this->scandir(input.c_str());
+        scandir(input.c_str());
 
         /* This showcase demonstrates the asynchronous loading of tvg.
            For this, pictures are added at a certain sync time.
@@ -96,16 +98,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    auto example = new UserExample;
-
-    tvgexam::input(argc, argv, example->input);
-
-    return tvgexam::main(example, argc, argv, false, 1280, 1280);
+    auto params = tvgexam::options(argc, argv, {1280, 1280});
+    return tvgexam::run(new UserExample(params), params);
 }

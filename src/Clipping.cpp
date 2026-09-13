@@ -28,6 +28,8 @@
 
 struct UserExample : tvgexam::Example
 {
+    using tvgexam::Example::Example;
+
     void compose(tvg::Shape* star)
     {
         star->moveTo(199, 34);
@@ -43,11 +45,11 @@ struct UserExample : tvgexam::Example
         star->close();
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(255, 255, 255);
         canvas->add(shape);
 
@@ -161,12 +163,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

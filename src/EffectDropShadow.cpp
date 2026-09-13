@@ -32,11 +32,13 @@ struct UserExample : tvgexam::Example
     tvg::Scene* scene2 = nullptr;
     tvg::Scene* scene3 = nullptr;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //background
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(255, 255, 255);
         canvas->add(bg);
 
@@ -48,7 +50,7 @@ struct UserExample : tvgexam::Example
             picture->load(EXAMPLE_DIR"/svg/thorvg-logo-clear.svg");
             picture->scale(0.6f);
             picture->origin(0.5f, 0.0f);
-            picture->translate(float(w / 2), 50.0f);
+            picture->translate(float(size.w / 2), 50.0f);
 
             scene1->add(picture);
             canvas->add(scene1);
@@ -62,7 +64,7 @@ struct UserExample : tvgexam::Example
             picture->load(EXAMPLE_DIR"/svg/152932619-bd3d6921-72df-4f09-856b-f9743ae32a14.svg");
             picture->scale(0.6f);
             picture->origin(0.5f, 0.0f);
-            picture->translate(float(w / 2), 250.0f);
+            picture->translate(float(size.w / 2), 250.0f);
 
             scene2->add(picture);
             canvas->add(scene2);
@@ -76,7 +78,7 @@ struct UserExample : tvgexam::Example
             picture->load(EXAMPLE_DIR"/svg//circles1.svg");
             picture->scale(0.7f);
             picture->origin(0.5f, 0.0f);
-            picture->translate(float(w / 2), 550.0f);
+            picture->translate(float(size.w / 2), 550.0f);
 
             scene3->add(picture);
             canvas->add(scene3);
@@ -85,9 +87,10 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 2.5f, true);   //2.5 seconds
+        tvgexam::Example::update(canvas, elapsed);
+        auto progress = tvg::toolkit::progress(elapsed, 2.5f, true);  // 2.5 seconds
 
         //Clear the previously applied effects
         scene1->add(tvg::SceneEffect::Clear);
@@ -104,9 +107,7 @@ struct UserExample : tvgexam::Example
 
         return true;
     }
-
 };
-
 
 /************************************************************************/
 /* Entry Point                                                          */
@@ -114,5 +115,6 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 800, 800, 4, true);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <memory>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,18 +29,20 @@
 
 struct UserExample : tvgexam::Example
 {
+    using tvgexam::Example::Example;
+
     // This example demonstrates two approaches to accessing internal SVG scene nodes.
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         // SVG Picture
         auto picture = tvg::Picture::gen();
 
         picture->accessible = true;  // allow accessing to svg internals, it must be set before svg load call.
         picture->load(EXAMPLE_DIR"/svg/favorite_on.svg");
-        picture->size(w, h);
+        picture->size(size.w, size.h);
 
         /* 1. This demonstartes a traversing the internal scene tree of the SVG picture. */
-        auto accessor = unique_ptr<tvg::Accessor>(tvg::Accessor::gen());
+        auto accessor = std::unique_ptr<tvg::Accessor>(tvg::Accessor::gen());
 
         // If picture->accessible is set to true, only ID-accessible nodes are traversed,
         // which improves efficiency. Otherwise, all nodes are considered.
@@ -47,7 +50,7 @@ struct UserExample : tvgexam::Example
             auto accessor = static_cast<tvg::Accessor*>(data);
 
             // figure out SVG node with the unique ID "star".
-            if (!strcmp(accessor->name(paint->id), "star")) {
+            if (!std::strcmp(accessor->name(paint->id), "star")) {
                 // override color
                 auto shape = (tvg::Shape*) paint;
                 shape->fill(0, 0, 255);
@@ -72,12 +75,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+#include <memory>
+#include <cmath>
+#include <cstdio>
 #include <thorvg-1/thorvg_lottie.h>
 #include "Example.h"
 
@@ -29,7 +32,7 @@
 
 struct UserExample : tvgexam::Example
 {
-    unique_ptr<tvg::LottieAnimation> lottie;
+    std::unique_ptr<tvg::LottieAnimation> lottie;
 
     struct {
         uint32_t cursor = 0;
@@ -39,21 +42,24 @@ struct UserExample : tvgexam::Example
     tvg::Point down{}, prv{}, cur{};
     tvg::Point origin;
     float rotation = 0.0f;
-    uint32_t time = 0;
+    size_t elapsed = 0;
+    size_t time = 0;
     float scale = 1.0f;
     bool pressed = false;
 
     struct {
         uint32_t duration = 2000;  //5secs
         float target = 0.0f;
-        uint32_t time = 0.0f;
+        size_t time = 0;
         bool on = false;
     } effect;
+
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
 
     float calculate(tvg::Point& prv, tvg::Point& cur)
     {
         //degree with dot product
-        auto degree = acos((prv.x * cur.x + prv.y * cur.y) / (sqrt(prv.x * prv.x + prv.y * prv.y) * sqrt(cur.x * cur.x + cur.y * cur.y)));
+        auto degree = std::acos((prv.x * cur.x + prv.y * cur.y) / (std::sqrt(prv.x * prv.x + prv.y * prv.y) * std::sqrt(cur.x * cur.x + cur.y * cur.y)));
         degree *= 30.f;  //weight x30
 
         //direction with cross product
@@ -80,7 +86,7 @@ struct UserExample : tvgexam::Example
 
         //flicking in 500ms
         if (elapsed - time > 500) return false;
-        if (abs(down.x - x) < 10 && abs(down.y - y) < 10) return false;
+        if (std::abs(down.x - x) < 10 && std::abs(down.y - y) < 10) return false;
 
         tvg::Point cur = {float(x) - origin.x, float(y) - origin.y};
         tvg::Point prv = {float(down.x) - origin.x, float(down.y) - origin.y};
@@ -96,7 +102,7 @@ struct UserExample : tvgexam::Example
     {
         rotation = val;
         char buf[1024];
-        snprintf(buf, sizeof(buf), R"({"spin_rotation":{"p":{"x":"var $bm_rt = %f;"}}})", rotation);
+        std::snprintf(buf, sizeof(buf), R"({"spin_rotation":{"p":{"x":"var $bm_rt = %f;"}}})", rotation);
         lottie->del(slot.rotation);
         slot.rotation = lottie->gen(buf);
         tvgexam::verify(lottie->apply(slot.rotation));
@@ -107,24 +113,24 @@ struct UserExample : tvgexam::Example
         cur = {float(x) - origin.x, float(y) - origin.y};
         if (!pressed) return false;
 
-        rotate(fmodf(rotation + calculate(prv, cur), 360.0f));
+        rotate(std::fmod(rotation + calculate(prv, cur), 360.0f));
 
         prv = cur;
 
         return true;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //LottieAnimation Controller
-        lottie = unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
+        lottie = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
         auto picture = lottie->picture();
         picture->origin(0.5f, 0.5f);
 
         //Lottie Boundary
         {
             auto shape = tvg::Shape::gen();
-            shape->appendRect(100, 100, w - 200, h - 200);
+            shape->appendRect(100, 100, size.w - 200, size.h - 200);
             shape->fill(50, 50, 50);
             canvas->add(std::move(shape));
         }
@@ -134,26 +140,29 @@ struct UserExample : tvgexam::Example
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
-        scale = ((w2 > h2) ? w / w2 : h / h2) * 0.8f;
+        scale = ((w2 > h2) ? size.w / w2 : size.h / h2) * 0.8f;
         picture->scale(scale);
-        picture->translate(float(w) * 0.5f, float(h) * 0.5f);
+        picture->translate(float(size.w) * 0.5f, float(size.h) * 0.5f);
 
         canvas->add(picture);
 
-        origin.x = float(w / 2);
-        origin.y = float(h / 2);
+        origin.x = float(size.w / 2);
+        origin.y = float(size.h / 2);
 
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
+        this->elapsed = elapsed;
+
         //update cursor
         char buf[1024];
         auto wiggle = std::sin(elapsed  * 0.01f) * 20.0f + 320.0f;
         auto cx = (cur.x + origin.x) / scale + wiggle;
         auto cy = (cur.y + origin.y) / scale;
-        snprintf(buf, sizeof(buf), R"({"finger_cursor":{"p":{"x":"var $bm_rt; $bm_rt = [%f, %f];"}}})", cx, cy);
+        std::snprintf(buf, sizeof(buf), R"({"finger_cursor":{"p":{"x":"var $bm_rt; $bm_rt = [%f, %f];"}}})", cx, cy);
         lottie->del(slot.cursor);
         slot.cursor = lottie->gen(buf);
         tvgexam::verify(lottie->apply(slot.cursor));
@@ -166,10 +175,10 @@ struct UserExample : tvgexam::Example
                 progress = 1.0f;
                 effect.on = false;
             }
-            rotate(fmodf(effect.target * sin(progress), 360.0f));
+            rotate(std::fmod(effect.target * std::sin(progress), 360.0f));
         }
 
-        auto progress = tvgexam::progress(elapsed, lottie->duration());
+        auto progress = tvg::toolkit::progress(elapsed, lottie->duration());
 
         //Update animation frame only when it's changed
         lottie->frame(lottie->totalFrame() * progress);
@@ -186,9 +195,10 @@ struct UserExample : tvgexam::Example
 int main(int argc, char **argv)
 {
     if (!tvg::LottieAnimation::expressions()) {
-        cout << "Lottie expressions are not supported in this build." << endl;
+        std::cout << "Lottie expressions are not supported in this build." << std::endl;
         return 0;
     }
 
-    return tvgexam::main(new UserExample, argc, argv, true, 1024, 1024, 0);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

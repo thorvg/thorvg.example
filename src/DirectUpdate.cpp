@@ -31,13 +31,13 @@ struct UserExample : tvgexam::Example
     tvg::Shape* solid = nullptr;
     tvg::Shape* gradient = nullptr;
 
-    uint32_t w, h;
+    using tvgexam::Example::Example;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Shape (for BG)
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(255, 255, 255);
         canvas->add(bg);
 
@@ -57,11 +57,11 @@ struct UserExample : tvgexam::Example
         //Gradient Shape
         {
             gradient = tvg::Shape::gen();
-            gradient->appendRect(w - 200, 0, 200, 200);
+            gradient->appendRect(size.w - 200, 0, 200, 200);
 
             //LinearGradient
             auto fill = tvg::LinearGradient::gen();
-            fill->linear(w - 200, 0, w - 200 + 285, 300);
+            fill->linear(size.w - 200, 0, size.w - 200 + 285, 300);
 
             //Gradient Color Stops
             tvg::Fill::ColorStop colorStops[3];
@@ -75,24 +75,23 @@ struct UserExample : tvgexam::Example
             canvas->add(gradient);
         }
 
-        this->w = w;
-        this->h = h;
-
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 2.0f, true);  //play time 2 sec.
+        tvgexam::Example::update(canvas, elapsed);
+        const auto& size = this->size();
+        auto progress = tvg::toolkit::progress(elapsed, 2.0f, true);  // play time 2 sec.
 
         //Reset Shape
         if (tvgexam::verify(solid->reset())) {
             //Solid Shape
-            solid->appendRect(-100 + (w * progress), -100 + (h * progress), 200, 200, (100 * progress), (100 * progress));
+            solid->appendRect(-100 + (size.w * progress), -100 + (size.h * progress), 200, 200, (100 * progress), (100 * progress));
             solid->strokeWidth(30 * progress);
 
             //Gradient Shape
-            gradient->translate(-(w * progress), (h * progress));
+            gradient->translate(-(size.w * progress), (size.h * progress));
 
             canvas->update();
 
@@ -103,12 +102,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 960, 960);
+    auto params = tvgexam::options(argc, argv, {960, 960});
+    return tvgexam::run(new UserExample(params), params);
 }

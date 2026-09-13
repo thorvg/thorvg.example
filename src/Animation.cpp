@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <memory>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,22 +29,27 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::string input = EXAMPLE_DIR"/lottie/sample.json";
-    unique_ptr<tvg::Animation> animation;
+    std::unique_ptr<tvg::Animation> animation;
+    std::string input = EXAMPLE_DIR "/lottie/sample.json";
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
+    {
+        tvgexam::filepath(params, input);   // -i <filepath>
+    }
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
         //Animation Controller
-        animation = unique_ptr<tvg::Animation>(tvg::Animation::gen());
+        animation = std::unique_ptr<tvg::Animation>(tvg::Animation::gen());
         auto picture = animation->picture();
         picture->origin(0.5f, 0.5f);  //center origin
 
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(50, 50, 50);
 
         canvas->add(shape);
@@ -53,21 +59,22 @@ struct UserExample : tvgexam::Example
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
-        auto scale = (w2 > h2) ? w / w2 : h / h2;
+        auto scale = (w2 > h2) ? size.w / w2 : size.h / h2;
         picture->scale(scale);
-        picture->translate(float(w) * 0.5f, float(h) * 0.5f);
+        picture->translate(float(size.w) * 0.5f, float(size.h) * 0.5f);
 
         canvas->add(picture);
 
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, animation->duration());
+        tvgexam::Example::update(canvas, elapsed);
+        auto progress = tvg::toolkit::progress(elapsed, animation->duration());
 
         //Update animation frame only when it's changed
-        if (animation->frame(animation->totalFrame() * progress) == tvg::Result(0)) {
+        if (animation->frame(animation->totalFrame() * progress) == tvg::Result::Success) {
             canvas->update();
             return true;
         }
@@ -76,16 +83,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    auto example = new UserExample;
-
-    tvgexam::input(argc, argv, example->input);
-
-    return tvgexam::main(example, argc, argv, false, 1024, 1024, 4, true);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

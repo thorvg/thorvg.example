@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+#include <memory>
+#include <vector>
 #include "Example.h"
 
 /************************************************************************/
@@ -31,20 +33,22 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::vector<unique_ptr<tvg::Animation>> animations;
-    std::string input = EXAMPLE_DIR"/lottie";
-    uint32_t w, h;
-    uint32_t size;
-
+    std::vector<std::unique_ptr<tvg::Animation>> animations;
+    std::string input = EXAMPLE_DIR "/lottie";
     int counter = 0;
+
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
+    {
+        tvgexam::filepath(params, input);  // -i <filepath>
+    }
 
     void populate(const char* path) override
     {
         if (counter >= NUM_PER_ROW * NUM_PER_COL) return;
 
         //ignore if not lottie.
-        const char *ext = path + strlen(path) - 4;
-        if (strcmp(ext, "json") && strcmp(ext, "lot")) return;
+        const auto ext = path + std::strlen(path) - 4;
+        if (std::strcmp(ext, "json") && std::strcmp(ext, "lot")) return;
 
         //Animation Controller
         auto animation = tvg::Animation::gen();
@@ -54,22 +58,25 @@ struct UserExample : tvgexam::Example
         if (!tvgexam::verify(picture->load(path))) return;
 
         //image scaling preserving its aspect ratio
+        const auto& size = this->size();
+        auto cellSize = size.w / NUM_PER_ROW;
         float w, h;
         picture->size(&w, &h);
-        picture->scale((w > h) ? size / w : size / h);
-        picture->translate((counter % NUM_PER_ROW) * size + size / 2, (counter / NUM_PER_ROW) * (this->h / NUM_PER_COL) + size / 2);
+        picture->scale((w > h) ? cellSize / w : cellSize / h);
+        picture->translate((counter % NUM_PER_ROW) * cellSize + cellSize / 2, (counter / NUM_PER_ROW) * (size.h / NUM_PER_COL) + cellSize / 2);
 
-        animations.push_back(unique_ptr<tvg::Animation>(animation));
+        animations.push_back(std::unique_ptr<tvg::Animation>(animation));
 
-        cout << "Lottie: " << path << endl;
+        std::cout << "Lottie: " << path << std::endl;
 
         counter++;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         for (auto& animation : animations) {
-            auto progress = tvgexam::progress(elapsed, animation->duration());
+            auto progress = tvg::toolkit::progress(elapsed, animation->duration());
             animation->frame(animation->totalFrame() * progress);
         }
 
@@ -78,22 +85,18 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(75, 75, 75);
         canvas->add(shape);
 
-        this->w = w;
-        this->h = h;
-        this->size = w / NUM_PER_ROW;
-
-        this->scandir(input.c_str());
+        scandir(input.c_str());
 
         //Run animation loop
         for (auto& animation : animations) {
@@ -104,16 +107,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    auto example = new UserExample;
-
-    tvgexam::input(argc, argv, example->input);
-
-    return tvgexam::main(example, argc, argv, false, 1280, 1280, 4, true);
+    auto params = tvgexam::options(argc, argv, {1280, 1280});
+    return tvgexam::run(new UserExample(params), params);
 }

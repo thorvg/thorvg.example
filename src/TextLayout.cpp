@@ -28,17 +28,15 @@
 
 struct UserExample : tvgexam::Example
 {
-    static constexpr int WIDTH = 1100;
-    static constexpr int HEIGHT = 800;
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
 
-
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NOTO-SANS-KR.ttf"))) return false;
 
         //fixed size
-        w = 800;
-        h = 800;
+        uint32_t w = 800;
+        uint32_t h = 800;
 
         //guide line
         float border = 150.0f;
@@ -188,7 +186,7 @@ struct UserExample : tvgexam::Example
             auto text = tvg::Text::gen();
             text->font("NOTO-SANS-KR");
             text->size(fontSize);
-            snprintf(buf, sizeof(buf), "Alignment = %0.2f", 0.25 * double(i));
+            std::snprintf(buf, sizeof(buf), "Alignment = %0.2f", 0.25 * double(i));
             text->text(buf);
             text->fill(255, 255, 255);
             text->translate(900, 200 + i * 100);
@@ -200,12 +198,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, UserExample::WIDTH, UserExample::HEIGHT);
+    auto params = tvgexam::options(argc, argv, {1100, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

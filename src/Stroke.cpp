@@ -28,7 +28,9 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Shape 1
         auto shape1 = tvg::Shape::gen();
@@ -130,12 +132,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

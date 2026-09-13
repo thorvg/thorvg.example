@@ -28,6 +28,8 @@
 
 struct UserExample : tvgexam::Example
 {
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
     void bbox(tvg::Canvas* canvas, tvg::Paint* paint)
     {
         // Ensure the paint is updated.
@@ -70,7 +72,7 @@ struct UserExample : tvgexam::Example
         }
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         {
             auto shape = tvg::Shape::gen();
@@ -313,5 +315,6 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 900, 900);
+    auto params = tvgexam::options(argc, argv, {900, 900});
+    return tvgexam::run(new UserExample(params), params);
 }

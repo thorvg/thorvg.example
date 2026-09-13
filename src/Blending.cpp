@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <fstream>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,6 +29,8 @@
 
 struct UserExample : tvgexam::Example
 {
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
     void blender(tvg::Canvas* canvas, const char* name, tvg::BlendMethod method, float x, float y, uint32_t* data)
     {
         auto text = tvg::Text::gen();
@@ -137,14 +140,13 @@ struct UserExample : tvgexam::Example
         }
     }
 
-
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"))) return false;
 
         //Prepare Image
-        string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
-        ifstream file(path, ios::binary);
+        std::string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
+        std::ifstream file(path, std::ios::binary);
         if (!file.is_open()) return false;
         auto data = (uint32_t*)malloc(sizeof(uint32_t) * (200*300));
         file.read(reinterpret_cast<char *>(data), sizeof (uint32_t) * 200 * 300);
@@ -175,12 +177,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 1800, 1380);
+    auto params = tvgexam::options(argc, argv, {1800, 1380});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
+#include <memory>
 #include <thorvg-1/thorvg_lottie.h>
 #include <iomanip>
 #include <iostream>
 #include "Example.h"
-
 
 /************************************************************************/
 /* ThorVG Drawing Contents                                              */
@@ -32,15 +32,16 @@
 
 struct UserExample : tvgexam::Example
 {
-    unique_ptr<tvg::LottieAnimation> lottie;
+    std::unique_ptr<tvg::LottieAnimation> lottie;
 
     bool playing = false;
     float progress = 0.0f;
-
-    uint32_t elapsed = 0;
-    uint32_t audioBaseElapsed = 0;
+    size_t elapsed = 0;
+    size_t audioBaseElapsed = 0;
     float    audioBaseOffset = 0.0f;
     float    audioVolume = 0.0f;
+
+    using tvgexam::Example::Example;
 
     void onAudio(const tvg::LottieAudioResolver& info)
     {
@@ -81,24 +82,24 @@ struct UserExample : tvgexam::Example
                   << std::endl;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //background
         auto* bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(30, 30, 35);
         canvas->add(bg);
 
         //lottie animation
-        lottie = unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
+        lottie = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
         auto* pic = lottie->picture();
         if (!tvgexam::verify(pic->load(EXAMPLE_DIR"/lottie/extensions/audio.json"))) return false;
 
         float pw, ph;
         pic->size(&pw, &ph);
-        auto scale = (pw / ph > float(w) / h) ? float(w) / pw : float(h) / ph;
+        auto scale = (pw / ph > float(size.w) / size.h) ? float(size.w) / pw : float(size.h) / ph;
         pic->scale(scale);
-        pic->translate((w - pw * scale) * 0.5f, (h - ph * scale) * 0.5f);
+        pic->translate((size.w - pw * scale) * 0.5f, (size.h - ph * scale) * 0.5f);
         canvas->add(pic);
 
         //register the audio resolver
@@ -110,11 +111,12 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         this->elapsed = elapsed;
 
-        progress = tvgexam::progress(elapsed, lottie->duration());
+        progress = tvg::toolkit::progress(elapsed, lottie->duration());
 
         lottie->frame(lottie->totalFrame() * progress);
 
@@ -125,12 +127,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1024, 600, 0);
+    auto params = tvgexam::options(argc, argv, {1024, 600});
+    return tvgexam::run(new UserExample(params), params);
 }

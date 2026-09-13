@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <fstream>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,10 +29,12 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Image source
-        ifstream file(EXAMPLE_DIR"/image/rawimage_200x300.raw", ios::binary);
+        std::ifstream file(EXAMPLE_DIR"/image/rawimage_200x300.raw", std::ios::binary);
         if (!file.is_open()) return false;
         auto data = (uint32_t*) malloc(sizeof(uint32_t) * (200 * 300));
         file.read(reinterpret_cast<char*>(data), sizeof (uint32_t) * 200 * 300);
@@ -39,7 +42,7 @@ struct UserExample : tvgexam::Example
 
         //background
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, 625, h);
+        bg->appendRect(0, 0, 625, size.h);
         bg->fill(50, 50, 50);
         canvas->add(bg);
 
@@ -557,12 +560,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1500, 1024);
+    auto params = tvgexam::options(argc, argv, {1500, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

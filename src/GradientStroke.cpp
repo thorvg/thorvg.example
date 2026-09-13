@@ -31,7 +31,9 @@ struct UserExample : tvgexam::Example
     tvg::Shape* shape1 = nullptr;
     tvg::Shape* shape2 = nullptr;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         tvg::Fill::ColorStop colorStops1[3];
         colorStops1[0] = {0, 255, 0, 0, 150};
@@ -123,9 +125,10 @@ struct UserExample : tvgexam::Example
         return update(canvas, 0);
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 2.0f, true);
+        tvgexam::Example::update(canvas, elapsed);
+        auto progress = tvg::toolkit::progress(elapsed, 2.0f, true);
 
         // slide shape1's linear gradient stroke
         tvg::Fill::ColorStop colorStops1[3];
@@ -154,12 +157,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

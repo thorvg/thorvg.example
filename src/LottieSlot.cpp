@@ -17,6 +17,8 @@
  * SOFTWARE.
  */
 
+#include <memory>
+#include <vector>
 #include <thorvg-1/thorvg_lottie.h>
 #include "Example.h"
 
@@ -29,9 +31,11 @@
 
 struct UserExample : tvgexam::Example
 {
-    vector<unique_ptr<tvg::LottieAnimation>> slots;
-    uint32_t w, h;
+    std::vector<std::unique_ptr<tvg::LottieAnimation>> slots;
+    uint32_t h;
     uint32_t size;
+
+    using tvgexam::Example::Example;
 
     void sizing(tvg::Picture* picture, uint32_t counter)
     {
@@ -44,31 +48,33 @@ struct UserExample : tvgexam::Example
         picture->translate((counter % NUM_PER_ROW) * size + size / 2, (counter / NUM_PER_ROW) * (this->h / NUM_PER_COL) + size / 2);
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
+        bool changed = false;
         for (auto& slot : slots) {
-            slot->frame(slot->totalFrame() * tvgexam::progress(elapsed, slot->duration()));
+            auto progress = tvg::toolkit::progress(elapsed, slot->duration());
+            if (slot->frame(slot->totalFrame() * progress) == tvg::Result::Success) changed = true;
         }
 
-        canvas->update();
+        if (changed) canvas->update();
 
-        return true;
+        return changed;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
         //Background
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(75, 75, 75);
         canvas->add(bg);
 
-        this->w = w;
-        this->h = h;
-        this->size = w / NUM_PER_ROW;
+        this->h = size.h;
+        this->size = size.w / NUM_PER_ROW;
 
         //slot (default)
         {
@@ -299,7 +305,6 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
@@ -307,9 +312,10 @@ struct UserExample : tvgexam::Example
 int main(int argc, char **argv)
 {
     if (!tvg::LottieAnimation::expressions()) {
-        cout << "Lottie expressions are not supported in this build." << endl;
+        std::cout << "Lottie expressions are not supported in this build." << std::endl;
         return 0;
     }
 
-    return tvgexam::main(new UserExample, argc, argv, false, 1024, 1024, 0 /* turn off for expressions */);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -20,30 +20,10 @@
  * SOFTWARE.
  */
 
+#include <memory>
 #include "Example.h"
 
 using namespace std;
-
-/************************************************************************/
-/* ThorVG Saving Contents                                               */
-/************************************************************************/
-
-
-void exportGif()
-{
-    auto animation = tvg::Animation::gen();
-    auto picture = animation->picture();
-    if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/sample.json"))) return;
-
-    picture->size(800, 800);
-
-    auto saver = unique_ptr<tvg::Saver>(tvg::Saver::gen());
-    if (!tvgexam::verify(saver->save(animation, "./test.gif"))) return;
-    saver->sync();
-
-    cout << "Successfully exported to test.gif." << endl;
-}
-
 
 /************************************************************************/
 /* Entry Point                                                          */
@@ -51,12 +31,22 @@ void exportGif()
 
 int main(int argc, char **argv)
 {
-    if (tvgexam::verify(tvg::Initializer::init())) {
+    tvg::Initializer::init();
 
-        exportGif();
+    auto animation = tvg::Animation::gen();
+    auto picture = animation->picture();
+    if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/lottie/sample.json"))) return 1;
 
-        tvg::Initializer::term();
-    }
+    picture->size(800, 800);
+
+    auto saver = std::unique_ptr<tvg::Saver>(tvg::Saver::gen());
+    if (!tvgexam::verify(saver->save(animation, "./test.gif"))) return 1;
+    saver->sync();
+
+    std::cout << "Successfully exported to test.gif." << std::endl;
+
+    tvg::Initializer::term();
+
     return 0;
 }
 

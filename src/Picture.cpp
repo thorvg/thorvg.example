@@ -28,16 +28,21 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::string input = EXAMPLE_DIR"/svg/logo.svg";
+    std::string input = EXAMPLE_DIR "/svg/logo.svg";
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
+    {
+        tvgexam::filepath(params, input);   // -i <filepath>
+    }
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //The default font for fallback in case
         tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
 
         //Background
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(50, 50, 50);
         canvas->add(bg);
 
@@ -49,9 +54,9 @@ struct UserExample : tvgexam::Example
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
-        auto scale = (w2 > h2) ? w / w2 : h / h2;
+        auto scale = (w2 > h2) ? size.w / w2 : size.h / h2;
         picture->scale(scale);
-        picture->translate(float(w) * 0.5f, float(h) * 0.5f);
+        picture->translate(float(size.w) * 0.5f, float(size.h) * 0.5f);
 
         canvas->add(picture);
 
@@ -59,16 +64,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    auto example = new UserExample;
-
-    tvgexam::input(argc, argv, example->input);
-
-    return tvgexam::main(example, argc, argv, false, 1024, 1024, 4);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -28,12 +28,14 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //background
         {
             auto bg = tvg::Shape::gen();
-            bg->appendRect(0, 0, w, h);    //x, y, w, h
+            bg->appendRect(0, 0, size.w, size.h);  // x, y, w, h
             bg->fill(200, 200, 255);       //r, g, b
             canvas->add(bg);
         }
@@ -63,7 +65,7 @@ struct UserExample : tvgexam::Example
 
             path->strokeMiterlimit(10);
             static float ml = path->strokeMiterlimit();
-            cout << "stroke miterlimit = " << ml << endl;
+            std::cout << "stroke miterlimit = " << ml << std::endl;
 
             canvas->add(path);
         }
@@ -145,12 +147,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }
