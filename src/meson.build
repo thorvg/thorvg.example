@@ -42,6 +42,7 @@ source_file = [
     'DirectUpdate.cpp',
     'Duplicate.cpp',
     'EffectDropShadow.cpp',
+    'GifAnimation.cpp',
     'GifSaver.cpp',
     'SceneEffects.cpp',
     'FillRule.cpp',
