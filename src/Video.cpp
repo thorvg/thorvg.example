@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+#include <fstream>
+#include <memory>
+#include <vector>
 #include <thorvg_media.h>
 #include "Example.h"
 
@@ -32,26 +35,27 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::string input = EXAMPLE_DIR"/media/video.mp4";
-    vector<char> data;
-    unique_ptr<tvg::Video> videos[2];  //0: file-based, 1: memory-based
-    uint32_t w, h;
+    std::string input = EXAMPLE_DIR "/media/video.mp4";
+    std::vector<char> data;
+    std::unique_ptr<tvg::Video> videos[2];  //0: file-based, 1: memory-based
     bool playing = true;
     bool paused = false;
 
-    UserExample()
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
     {
-        cout << "Keys:\n"
+        tvgexam::filepath(params, input);  // -i <filepath>
+
+        std::cout << "Keys:\n"
                 "  0: Play or Stop\n"
                 "  1: Pause or Resume\n"
                 "  2: Volume up\n"
                 "  3: Volume down\n";
     }
 
-    void sizing(tvg::Picture* picture, uint32_t counter)
+    void sizing(tvg::Picture* picture, uint32_t counter, const tvg::toolkit::App::Size& size)
     {
-        auto cellW = static_cast<float>(this->w) / NUM_PER_ROW;
-        auto cellH = static_cast<float>(this->h) / NUM_PER_COL;
+        auto cellW = static_cast<float>(size.w) / NUM_PER_ROW;
+        auto cellH = static_cast<float>(size.h) / NUM_PER_COL;
 
         float pw, ph;
         picture->size(&pw, &ph);
@@ -61,44 +65,41 @@ struct UserExample : tvgexam::Example
         picture->translate((counter % NUM_PER_ROW + 0.5f) * cellW, (counter / NUM_PER_ROW + 0.5f) * cellH);
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         // background
         auto bg = tvg::Shape::gen();
-        bg->appendRect(0, 0, w, h);
+        bg->appendRect(0, 0, size.w, size.h);
         bg->fill(0, 0, 0);
         canvas->add(bg);
 
-        this->w = w;
-        this->h = h;
-
         //file-source video
         {
-            videos[0] = unique_ptr<tvg::Video>(tvg::Video::gen());
+            videos[0] = std::unique_ptr<tvg::Video>(tvg::Video::gen());
             auto picture = videos[0]->picture();
             if (!tvgexam::verify(picture->load(input.c_str()))) return false;
             if (!tvgexam::verify(videos[0]->loop(true))) return false;
-            sizing(picture, 0);
+            sizing(picture, 0, size);
             canvas->add(picture);
         }
 
         //data-source video
         {
-            ifstream file(input, ios::binary | ios::ate);
+            std::ifstream file(input, std::ios::binary | std::ios::ate);
             if (!file.is_open()) return false;
             auto pos = file.tellg();
             if (pos < 0 || pos > UINT32_MAX) return false;
-            auto size = static_cast<uint32_t>(pos);
-            data.resize(size);
-            file.seekg(0, ios::beg);
-            if (!file.read(data.data(), size)) return false;
+            auto dataSize = static_cast<uint32_t>(pos);
+            data.resize(dataSize);
+            file.seekg(0, std::ios::beg);
+            if (!file.read(data.data(), dataSize)) return false;
 
-            videos[1] = unique_ptr<tvg::Video>(tvg::Video::gen());
+            videos[1] = std::unique_ptr<tvg::Video>(tvg::Video::gen());
             auto picture = videos[1]->picture();
-            if (!tvgexam::verify(picture->load(data.data(), size, "mp4"))) return false;
+            if (!tvgexam::verify(picture->load(data.data(), dataSize, "mp4"))) return false;
             if (!tvgexam::verify(videos[1]->loop(true))) return false;
             if (!tvgexam::verify(videos[1]->mute(true))) return false;
-            sizing(picture, 3);
+            sizing(picture, 3, size);
             canvas->add(picture);
         }
 
@@ -108,14 +109,16 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool keydown(tvg::Canvas* canvas, int32_t key) override
+    bool keydown(tvg::Canvas* canvas, tvg::toolkit::Key key) override
     {
+        tvgexam::Example::keydown(canvas, key);
+
         auto print = [this]() {
-            cout << "Videos: " << (playing ? (paused ? "paused" : "playing") : "stopped") << ", file volume: " << videos[0]->volume() << ", memory: muted" << endl;
+            std::cout << "Videos: " << (playing ? (paused ? "paused" : "playing") : "stopped") << ", file volume: " << videos[0]->volume() << ", memory: muted" << std::endl;
         };
 
-        switch (key) {
-            case SDLK_0:
+        switch (static_cast<int32_t>(key)) {
+            case '0':
                 if (playing) {  // play or stop
                     if (!tvgexam::verify(videos[0]->stop())) return false;
                     if (!tvgexam::verify(videos[1]->stop())) return false;
@@ -128,20 +131,20 @@ struct UserExample : tvgexam::Example
                 }
                 print();
                 return true;
-            case SDLK_1:    // pause or resume
+            case '1':  // pause or resume
                 if (!playing) return false;
                 if (!tvgexam::verify(paused ? videos[0]->play() : videos[0]->pause())) return false;
                 if (!tvgexam::verify(paused ? videos[1]->play() : videos[1]->pause())) return false;
                 paused = !paused;
                 print();
                 return true;
-            case SDLK_2: {  // volume up
+            case '2': {  // volume up
                 auto volume = videos[0]->volume();
                 if (!tvgexam::verify(videos[0]->volume(volume < 0.9f ? volume + 0.1f : 1.0f))) return false;
                 print();
                 return true;
             }
-            case SDLK_3: {  // volume down
+            case '3': {  // volume down
                 auto volume = videos[0]->volume();
                 if (!tvgexam::verify(videos[0]->volume(volume > 0.1f ? volume - 0.1f : 0.0f))) return false;
                 print();
@@ -152,8 +155,9 @@ struct UserExample : tvgexam::Example
         }
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         // Update the canvas alongside the video playback (only while frames advance).
         if (!playing || paused) return false;
 
@@ -162,16 +166,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    auto example = new UserExample;
-
-    tvgexam::input(argc, argv, example->input);
-
-    return tvgexam::main(example, argc, argv, false, 1024, 1024, 4, true);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

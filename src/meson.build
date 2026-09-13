@@ -1,35 +1,7 @@
 cc = meson.get_compiler('cpp')
 thorvg_dep = dependency('thorvg-1', required: true)
-examples_dep = [thorvg_dep, dependency('sdl2', required: true)]
-compiler_flags = ['-DSDL_MAIN_HANDLED']
-
-# GL or GLES
-gl_dep = dependency('gl', required: false)
-gles_dep = dependency('glesv2', required: false)
-
-if gl_dep.found()
-    examples_dep += gl_dep
-elif gles_dep.found()
-    examples_dep += gles_dep
-    compiler_flags += ['-DTVGEXAMPLE_GLES_SUPPORTED']
-else
-    message('Neither OpenGL nor OpenGL ES was found. Skipping GL examples.')
-endif
-
-# WebGPU
-wgpu_dep = dependency('wgpu_native', required: false)
-
-if wgpu_dep.found()
-    examples_dep += wgpu_dep
-    compiler_flags += ['-DTVGEXAMPLE_WGPU_SUPPORTED']
-    if host_machine.system() == 'darwin'
-        add_languages('objcpp', native: false)
-        examples_dep += declare_dependency(link_args: ['-lobjc', '-framework', 'Cocoa', '-framework', 'CoreVideo', '-framework', 'IOKit', '-framework', 'QuartzCore'])
-        compiler_flags += ['-x', 'objective-c++']
-    endif
-else
-    message('wgpu_native not found, skipping WGPU examples.')
-endif
+toolkit_dep = dependency('thorvg-toolkit', required: true)
+examples_dep = [thorvg_dep, toolkit_dep]
 
 source_file = [
     'Accessor.cpp',
@@ -53,7 +25,6 @@ source_file = [
     'LinearGradient.cpp',
     'Masking.cpp',
     'MaskingMethods.cpp',
-    'MultiCanvas.cpp',
     'Opacity.cpp',
     'Path.cpp',
     'Picture.cpp',
@@ -126,19 +97,10 @@ else
     message('ThorVG Media not found. Skipping Video example.')
 endif
 
-# CAPI Examples
-if cc.has_function('tvg_shape_new', prefix: '#include <thorvg_capi.h>', include_directories: thorvg_inc, dependencies: thorvg_dep)
-    source_file += ['Capi.cpp']
-    message('ThorVG CAPI found. Enabled Capi examples.')
-else
-    message('ThorVG CAPI not found. Skipping Capi examples.')
-endif
-
 foreach current_file : source_file
     name = current_file.split('.')[0]
     executable(name, current_file,
-        dependencies: examples_dep,
-        cpp_args : compiler_flags)
+        dependencies: examples_dep)
 endforeach
 
 if cc.get_id() == 'msvc'

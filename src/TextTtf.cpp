@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <fstream>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,11 +29,13 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(75, 75, 75);
         canvas->add(shape);
 
@@ -45,14 +48,14 @@ struct UserExample : tvgexam::Example
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NanumGothicCoding.ttf"))) return false;
 
         //Load from memory
-        ifstream file(EXAMPLE_DIR"/font/SentyCloud.ttf", ios::binary);
+        std::ifstream file(EXAMPLE_DIR"/font/SentyCloud.ttf", std::ios::binary);
         if (!file.is_open()) return false;
         file.seekg(0, std::ios::end);
-        auto size = file.tellg();
+        auto fsize = file.tellg();
         file.seekg(0, std::ios::beg);
-        auto data = (char*)malloc(size);
-        if (data && file.read(data, size)) {
-            if (!tvgexam::verify(tvg::Text::load("SentyCloud", data, size, "ttf", true))) return false;
+        auto data = (char*)malloc(fsize);
+        if (data && file.read(data, fsize)) {
+            if (!tvgexam::verify(tvg::Text::load("SentyCloud", data, fsize, "ttf", true))) return false;
         }
         file.close();
         free(data);
@@ -210,12 +213,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1024, 1024);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

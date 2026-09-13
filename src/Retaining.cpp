@@ -28,9 +28,11 @@
 
 struct UserExample : tvgexam::Example
 {
-    uint32_t last = 0;
+    size_t last = 0;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Prepare Round Rectangle
         auto shape1 = tvg::Shape::gen();
@@ -72,8 +74,9 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         //update per every 250ms
         //reorder with a circular list
         if (elapsed - last < 250) return false;
@@ -99,12 +102,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 960, 960);
+    auto params = tvgexam::options(argc, argv, {960, 960});
+    return tvgexam::run(new UserExample(params), params);
 }

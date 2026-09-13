@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+#include <memory>
+#include <vector>
+#include <chrono>
 #include <thorvg-1/thorvg_lottie.h>
 #include "Example.h"
 
@@ -29,7 +32,10 @@
 
 struct UserExample : tvgexam::Example
 {
-    tvg::LottieAnimation* lottie;
+    std::unique_ptr<tvg::LottieAnimation> lottie;
+    size_t stateBeginTime = 0;
+
+    using tvgexam::Example::Example;
 
     //designed the states: [angry, sad, mourn, wink, laughing]
     struct AnimState {
@@ -41,14 +47,9 @@ struct UserExample : tvgexam::Example
     int stateIdx = 0;               //current state index
 
     struct {
-        float beginTime;      //tweening begin time
+        std::chrono::steady_clock::time_point beginTime;  // tweening begin time
         bool active = false;  //whether on-tweening or not
     } tween;
-
-    ~UserExample()
-    {
-        delete(lottie);
-    }
 
     void init()
     {
@@ -59,7 +60,7 @@ struct UserExample : tvgexam::Example
             auto name = lottie->marker(i, &begin, nullptr);
             lottie->segment(name);
             //save the current AnimState to the state list
-            states.push_back({string(name), begin});
+            states.push_back({std::string(name), begin});
         }
 
         //set the default state (Angry)
@@ -76,7 +77,7 @@ struct UserExample : tvgexam::Example
         lottie->segment(nullptr);
 
         //tweening trigger time
-        tween.beginTime = timestamp();
+        tween.beginTime = std::chrono::steady_clock::now();
 
         //the next state begin frame as the tweening "to" frame
         lottie->tweenTo(states[stateIdx].begin);
@@ -85,7 +86,7 @@ struct UserExample : tvgexam::Example
 
         this->stateIdx = stateIdx;
 
-        cout << "tween to: " << states[stateIdx].name << endl;
+        std::cout << "tween to: " << states[stateIdx].name << std::endl;
     }
 
     bool clickdown(tvg::Canvas* canvas, int32_t x, int32_t y) override
@@ -104,16 +105,16 @@ struct UserExample : tvgexam::Example
         return false;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Animation Controller
-        lottie = tvg::LottieAnimation::gen();
+        lottie = std::unique_ptr<tvg::LottieAnimation>(tvg::LottieAnimation::gen());
         auto picture = lottie->picture();
         picture->origin(0.5f, 0.5f);  //center origin
 
         //Background
         auto shape = tvg::Shape::gen();
-        shape->appendRect(0, 0, w, h);
+        shape->appendRect(0, 0, size.w, size.h);
         shape->fill(50, 50, 50);
 
         canvas->add(shape);
@@ -123,10 +124,9 @@ struct UserExample : tvgexam::Example
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
-        auto scale = (w2 > h2) ? w / w2 : h / h2;
+        auto scale = (w2 > h2) ? size.w / w2 : size.h / h2;
         picture->scale(scale);
-        picture->translate(float(w) * 0.5f, float(h) * 0.5f);
-
+        picture->translate(float(size.w) * 0.5f, float(size.h) * 0.5f);
 
         canvas->add(picture);
 
@@ -135,16 +135,16 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool tweening(tvg::Canvas* canvas)
+    bool tweening(tvg::Canvas* canvas, size_t elapsed)
     {
         //perform tweening for 0.25 seconds.
         //in this sample, we use linear interpolation. You can vary the progress
         //with a specific interpolation style (e.g., sine, cosine, or spring curves).
-        auto progress = (timestamp() - tween.beginTime) / 0.25f;
+        auto progress = std::chrono::duration<float>(std::chrono::steady_clock::now() - tween.beginTime).count() / 0.25f;
 
         //perform the tweening effect
         if (progress < 1.0f) {
-            if (lottie->tween(progress) == tvg::Result(0)) {
+            if (lottie->tween(progress) == tvg::Result::Success) {
                 canvas->update();
                 return true;
             }
@@ -152,10 +152,10 @@ struct UserExample : tvgexam::Example
         } else {
             lottie->segment(states[stateIdx].name.c_str());
             tween.active = false;
-            elapsed = 0;
+            stateBeginTime = elapsed;
 
             //tweening is over, start to the desired state play
-            if (lottie->frame(0) == tvg::Result(0)) {
+            if (lottie->frame(0) == tvg::Result::Success) {
                 canvas->update();
                 return true;
             }
@@ -164,16 +164,17 @@ struct UserExample : tvgexam::Example
         return false;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         //on state tweening
-        if (tween.active) return tweening(canvas);
+        if (tween.active) return tweening(canvas, elapsed);
 
         //play the current state
-        auto progress = tvgexam::progress(elapsed, lottie->duration());
+        auto progress = tvg::toolkit::progress(elapsed - stateBeginTime, lottie->duration());
 
         //Update animation frame only when it's changed
-        if (lottie->frame(lottie->totalFrame() * progress) == tvg::Result(0)) {
+        if (lottie->frame(lottie->totalFrame() * progress) == tvg::Result::Success) {
             canvas->update();
             return true;
         }
@@ -182,12 +183,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 1024, 1024);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

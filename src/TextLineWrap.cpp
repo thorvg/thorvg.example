@@ -30,6 +30,8 @@ struct UserExample : tvgexam::Example
 {
     tvg::Point size = {230.0f, 120.0f};
 
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
     void guide(tvg::Canvas* canvas, const char* title, float x, float y)
     {
         auto txt = tvg::Text::gen();
@@ -61,7 +63,7 @@ struct UserExample : tvgexam::Example
         canvas->add(txt);
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NOTO-SANS-KR.ttf"))) return false;
 
@@ -109,12 +111,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

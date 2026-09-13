@@ -20,7 +20,7 @@ jobs:
     - name: Install Packages
       run: |
         sudo apt-get update
-        sudo apt-get install meson ninja-build libsdl2-dev
+        sudo apt-get install meson ninja-build pkg-config libsdl2-dev
 
     - name: Install ThorVG
       run: |
@@ -29,6 +29,12 @@ jobs:
         meson . build -Dloaders=all -Dsavers=gif -Dbindings=capi -Dstatic=true
         sudo ninja -C build install
         cd ..
+
+    - name: Install ThorVG Toolkit
+      run: |
+        git clone https://github.com/thorvg/thorvg.toolkit.git thorvg.toolkit
+        meson setup thorvg.toolkit/build thorvg.toolkit
+        sudo ninja -C thorvg.toolkit/build install
 
     - name: Build
       run: |

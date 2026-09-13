@@ -29,37 +29,38 @@
 struct UserExample : tvgexam::Example
 {
     static constexpr uint32_t VPORT_SIZE = 300;
-    uint32_t w, h;
     tvg::Picture* picture = nullptr;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //set viewport before canvas become dirty.
         if (!tvgexam::verify(canvas->viewport(0, 0, VPORT_SIZE, VPORT_SIZE))) return false;
 
         auto mask = tvg::Shape::gen();
-        mask->appendCircle(w/2, h/2, w/2, h/2);
+        mask->appendCircle(size.w / 2, size.h / 2, size.w / 2, size.h / 2);
         mask->fill(255, 255, 255);
         //Use the opacity for a half-translucent mask.
         mask->opacity(125);
 
         picture = tvg::Picture::gen();
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/svg/tiger.svg"))) return false;
-        picture->size(w, h);
+        picture->size(size.w, size.h);
         picture->mask(mask, tvg::MaskMethod::Alpha);
         canvas->add(picture);
-
-        this->w = w;
-        this->h = h;
 
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 2.0f, true);  //play time 2 sec.
+        tvgexam::Example::update(canvas, elapsed);
+        auto progress = tvg::toolkit::progress(elapsed, 2.0f, true);  // play time 2 sec.
 
-        if (!tvgexam::verify(canvas->viewport((w - VPORT_SIZE) * progress, (h - VPORT_SIZE) * progress, VPORT_SIZE, VPORT_SIZE))) return false;
+        auto& size = this->size();
+
+        if (!tvgexam::verify(canvas->viewport((size.w - VPORT_SIZE) * progress, (size.h - VPORT_SIZE) * progress, VPORT_SIZE, VPORT_SIZE))) return false;
 
         canvas->update();
 
@@ -67,12 +68,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 1024, 1024, 4, true);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }

@@ -35,7 +35,9 @@ struct UserExample : tvgexam::Example
     tvg::Scene* tint = nullptr;
     tvg::Scene* trintone = nullptr;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //blur scene
         for (int i = 0; i < 3; ++i) {
@@ -93,9 +95,10 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 2.5f, true);   //2.5 seconds
+        tvgexam::Example::update(canvas, elapsed);
+        auto progress = tvg::toolkit::progress(elapsed, 2.5f, true);  // 2.5 seconds
 
         //Apply GaussianBlur post effect (sigma, direction, border option, quality)
         for (int i = 0; i < 3; ++i) {
@@ -122,12 +125,12 @@ struct UserExample : tvgexam::Example
 
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, SIZE * 3, SIZE * 2, 4, true);
+    auto params = tvgexam::options(argc, argv, {SIZE * 3, SIZE * 2});
+    return tvgexam::run(new UserExample(params), params);
 }

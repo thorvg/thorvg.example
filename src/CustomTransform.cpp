@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <cmath>
 #include "Example.h"
 
 /************************************************************************/
@@ -28,16 +29,19 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         return update(canvas, 0);
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         if (!tvgexam::verify(canvas->remove())) return false;
 
-        auto progress = tvgexam::progress(elapsed, 2.0f, true);  //play time 2 sec.
+        auto progress = tvg::toolkit::progress(elapsed, 2.0f, true);  // play time 2 sec.
 
         //Shape
         auto shape = tvg::Shape::gen();
@@ -70,8 +74,8 @@ struct UserExample : tvgexam::Example
         constexpr auto PI = 3.141592f;
         auto degree = 45.0f;
         auto radian = degree / 180.0f * PI;
-        auto cosVal = cosf(radian);
-        auto sinVal = sinf(radian);
+        auto cosVal = std::cos(radian);
+        auto sinVal = std::sin(radian);
 
         auto t11 = m.e11 * cosVal + m.e12 * sinVal;
         auto t12 = m.e11 * -sinVal + m.e12 * cosVal;
@@ -99,12 +103,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 960, 960);
+    auto params = tvgexam::options(argc, argv, {960, 960});
+    return tvgexam::run(new UserExample(params), params);
 }

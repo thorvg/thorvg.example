@@ -1,7 +1,7 @@
 project('thorvg.example',
   'cpp',
   version: '1.0',
-  default_options: ['buildtype=debugoptimized', 'cpp_std=c++14', 'optimization=3'],
+  default_options: ['buildtype=debugoptimized', 'cpp_std=c++17', 'optimization=3'],
   license : 'MIT')
 
 example_dir = meson.current_source_dir()

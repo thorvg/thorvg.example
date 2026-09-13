@@ -37,7 +37,9 @@ struct UserExample : tvgexam::Example
     tvg::Shape* marquee;
     int mx = 0, my = 0, mw = 20, mh = 20;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //dash stroke filled shape
         {
@@ -122,8 +124,9 @@ struct UserExample : tvgexam::Example
         return false;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         marquee->translate(mx, my);
 
         //reset
@@ -149,5 +152,6 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 1200, 1200);
+    auto params = tvgexam::options(argc, argv, {1200, 1200});
+    return tvgexam::run(new UserExample(params), params);
 }

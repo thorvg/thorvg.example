@@ -32,18 +32,20 @@ struct UserExample : tvgexam::Example
     tvg::Picture* picture2;
     uint8_t buffer[800*800*4];
 
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
     void generate()
     {
         // generate the content image
         for (int i = 0; i < 800*800*4; i+=4) {
             buffer[i + 0] = 255;
-            buffer[i + 1] = rand() % 255;
-            buffer[i + 2] = rand() % 255;
-            buffer[i + 3] = rand() % 255;
+            buffer[i + 1] = std::rand() % 255;
+            buffer[i + 2] = std::rand() % 255;
+            buffer[i + 3] = std::rand() % 255;
         }
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         generate();
 
@@ -58,7 +60,7 @@ struct UserExample : tvgexam::Example
 
         // picture 2
         picture2 = tvg::Picture::gen();
-        picture2->translate(w/2, h/2);
+        picture2->translate(size.w / 2, size.h / 2);
         picture2->scale(0.5f);
 
         // load the picture raw image data
@@ -69,8 +71,10 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
+
         generate();
 
         // only reload the picture1 image
@@ -82,12 +86,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 800, 800);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

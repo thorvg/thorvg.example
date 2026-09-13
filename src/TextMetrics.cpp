@@ -36,11 +36,13 @@ struct UserExample : tvgexam::Example
     std::string data = "Type here: ";
     tvg::Shape* cursor;
     tvg::Point pos;                //cursor position
+    size_t lastElapsed = 0;
     float endPos[MAX_LINE];        //each line end position
     uint32_t curLine = 1;          //default line number
-    uint32_t lastElapsed = 0;
     bool toggle = true;            //blinking toggle
     bool updated = false;
+
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
 
     ~UserExample()
     {
@@ -49,11 +51,13 @@ struct UserExample : tvgexam::Example
     }
 
     // This example demonstrates very basic alphabet text typing.
-    bool keydown(tvg::Canvas* canvas, int32_t key) override
+    bool keydown(tvg::Canvas* canvas, tvg::toolkit::Key key) override
     {
+        tvgexam::Example::keydown(canvas, key);
+
         auto input = static_cast<char>(key);
 
-        if (Example::lshift) input -= 32;  // capital character
+        if (tvgexam::Example::lshift) input -= 32;  // capital character
 
         tvg::GlyphMetrics glyphMetric;
         auto pos = this->pos;
@@ -116,7 +120,7 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         if (!tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/NOTO-SANS-KR.ttf"))) return false;
 
@@ -128,9 +132,9 @@ struct UserExample : tvgexam::Example
         lines->strokeWidth(1);
         lines->strokeDash(dashPattern, 2);
         lines->moveTo(border, border);
-        lines->lineTo(w - border, border);
-        lines->lineTo(w - border, h - border);
-        lines->lineTo(border, h - border);
+        lines->lineTo(size.w - border, border);
+        lines->lineTo(size.w - border, size.h - border);
+        lines->lineTo(border, size.h - border);
         lines->close();
         canvas->add(lines);
 
@@ -145,7 +149,7 @@ struct UserExample : tvgexam::Example
         text->font("NOTO-SANS-KR");
         text->size(16.0f);
         text->align(0.0f, 0.0f);
-        text->layout(w - border * 2.0f, h - border * 2.0f);
+        text->layout(size.w - border * 2.0f, size.h - border * 2.0f);
         text->wrap(tvg::TextWrap::Character);
         text->text(data.c_str());
         text->fill(255, 255, 255);
@@ -178,8 +182,9 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         auto updated = this->updated;
         this->updated = false;
 
@@ -201,12 +206,12 @@ struct UserExample : tvgexam::Example
 
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 800, 800);
+    auto params = tvgexam::options(argc, argv, {800, 800});
+    return tvgexam::run(new UserExample(params), params);
 }

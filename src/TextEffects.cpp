@@ -29,18 +29,21 @@
 
 struct UserExample : tvgexam::Example
 {
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    using tvgexam::Example::Example;
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         // Load fonts
         return tvgexam::verify(tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf"));
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
+        tvgexam::Example::update(canvas, elapsed);
         if (!tvgexam::verify(canvas->remove())) return false;
 
         const char* waveText = "WAVE EFFECT";
-        float time = elapsed * 0.001f * 3.0f;
+        auto time = elapsed * 0.001f * 3.0f;
 
         auto shape = tvg::Shape::gen();
         shape->appendRect(0, 0, 600, 600);
@@ -48,9 +51,9 @@ struct UserExample : tvgexam::Example
         canvas->add(shape);
 
         // Rainbow effect on title
-        float r = std::sin(time) * 127 + 128;
-        float g = std::sin(time + 2) * 127 + 128;
-        float b = std::sin(time + 4) * 127 + 128;
+        auto r = std::sin(time) * 127 + 128;
+        auto g = std::sin(time + 2) * 127 + 128;
+        auto b = std::sin(time + 4) * 127 + 128;
 
         auto animTitle = tvg::Text::gen();
         animTitle->font("PublicSans-Regular");
@@ -65,7 +68,7 @@ struct UserExample : tvgexam::Example
         canvas->add(animTitle);
 
         // Pulsing subtitle
-        float scale = 1 + std::sin(time * 2) * 0.1f;
+        auto scale = 1 + std::sin(time * 2) * 0.1f;
         auto animSubtitle = tvg::Text::gen();
         animSubtitle->font("PublicSans-Regular");
         animSubtitle->size(24 * scale);
@@ -84,30 +87,30 @@ struct UserExample : tvgexam::Example
         rotatingText->fill(255, 200, 100);
 
         rotatingText->bounds(&x, &y, &w, &h);
-        float cx = 300;
-        float cy = 300;
+        auto cx = 300;
+        auto cy = 300;
 
         constexpr auto PI = 3.141592f;
-        float degree = time * 20;
-        float radian = degree / 180.0f * PI;
-        float cosVal = std::cos(radian);
-        float sinVal = std::sin(radian);
+        auto degree = time * 20;
+        auto radian = degree / 180.0f * PI;
+        auto cosVal = std::cos(radian);
+        auto sinVal = std::sin(radian);
 
-        float textCenterX = cx - w * 0.5f;
-        float textCenterY = cy - h * 0.5f;
+        auto textCenterX = cx - w * 0.5f;
+        auto textCenterY = cy - h * 0.5f;
 
-        float tx = cx + (textCenterX - cx) * cosVal - (textCenterY - cy) * sinVal;
-        float ty = cy + (textCenterX - cx) * sinVal + (textCenterY - cy) * cosVal;
+        auto tx = cx + (textCenterX - cx) * cosVal - (textCenterY - cy) * sinVal;
+        auto ty = cy + (textCenterX - cx) * sinVal + (textCenterY - cy) * cosVal;
 
         tvg::Matrix m = {cosVal, -sinVal, tx, sinVal, cosVal, ty, 0, 0, 1};
         rotatingText->transform(m);
         canvas->add(rotatingText);
 
         // Wave effect text
-        size_t waveLen = strlen(waveText);
+        size_t waveLen = std::strlen(waveText);
         for (size_t i = 0; i < waveLen; i++) {
-            float yOffset = std::sin(time * 2 + i * 0.5f) * 20;
-            float charColor = std::sin(time + i * 0.3f) * 127 + 128;
+            auto yOffset = std::sin(time * 2 + i * 0.5f) * 20;
+            auto charColor = std::sin(time + i * 0.3f) * 127 + 128;
 
             auto charText = tvg::Text::gen();
             charText->font("PublicSans-Regular");
@@ -126,12 +129,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, false, 600, 600);
+    auto params = tvgexam::options(argc, argv, {600, 600});
+    return tvgexam::run(new UserExample(params), params);
 }

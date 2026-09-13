@@ -16,7 +16,7 @@ ThorVG Example provides a wide range of example codes. Those examples demonstrat
 <img width="1997" height="auto" alt="image" src="https://github.com/user-attachments/assets/90df1659-2ad1-4a81-89c9-33f6cc7a467e" />
  
 ## How To
-This section details the steps required to configure the environment for installing ThorVG Example. Please note that [ThorVG](https://github.com/thorvg/thorvg) and [SDL](https://www.libsdl.org/) must be installed on your system before building the examples.
+This section details the steps required to configure the environment for installing ThorVG Example. Please note that [ThorVG](https://github.com/thorvg/thorvg) and [ThorVG Toolkit](https://github.com/thorvg/thorvg.toolkit) must be installed on your system before building the examples. Install ThorVG first, then ThorVG Toolkit.
 <br />
 ### Build
 ThorVG Example supports [Meson](https://mesonbuild.com/) build system. Install [meson](http://mesonbuild.com/Getting-meson.html) and [ninja](https://ninja-build.org/) if you don't have them already.
@@ -38,6 +38,8 @@ To run an example with the GL or WebGPU engine, pass `-e gl` or `-e wg` as a com
 ./builddir/src/Shapes -e gl            # Runs with OpenGL/ES
 ./builddir/src/Shapes -e wg            # Runs with WebGPU
 ./builddir/src/Shapes -r 1200x1200     # Runs with a 1200x1200 window
+./builddir/src/Shapes -t 3             # Runs with 3 worker threads
+./builddir/src/Shapes --fps            # Enables FPS (frames per second) output
 ./builddir/src/Picture -i <input_path> # Loads and renders the given asset
 ```
 Options can be combined when applicable:
@@ -47,3 +49,13 @@ Options can be combined when applicable:
 ```
 
 This runs the Animation example using the WebGPU engine with a 1200x1200 window and the specified input asset.
+
+### Command-Line Options
+
+| Option | Description | Default |
+| --- | --- | --- |
+| `-e <engine>` | Select the rendering engine: `gl` for OpenGL/ES or `wg` for WebGPU. | CPU (software) |
+| `-r <width>x<height>` | Set the window size in pixels. Both dimensions must be positive integers. | Example-specific |
+| `-i <filepath>` | Set the input asset path. Supported by Animation, Lottie, Picture, Svg, and Video. | Example-specific |
+| `-t <threads>` | Set the number of worker threads, capped at a max thread. | 4 |
+| `--fps` | Print average main loop FPS to the console once per second. | Disabled |

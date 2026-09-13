@@ -30,7 +30,9 @@ struct UserExample : tvgexam::Example
 {
     tvg::Picture* picture = nullptr;
 
-    bool content(tvg::Canvas* canvas, uint32_t w, uint32_t h) override
+    UserExample(const tvgexam::Params& params) : tvgexam::Example(params, true) {}
+
+    bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
         //Original
         picture = tvg::Picture::gen();
@@ -38,7 +40,7 @@ struct UserExample : tvgexam::Example
         if (!tvgexam::verify(picture->load(EXAMPLE_DIR"/image/scale.jpg"))) return false;
 
         picture->origin(0.5f, 0.5f);  //center origin
-        picture->translate(w/2, h/2);
+        picture->translate(size.w / 2, size.h / 2);
         picture->origin(0.5f, 0.5f);
         picture->scale(1.5f);
 
@@ -47,9 +49,11 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool update(tvg::Canvas* canvas, uint32_t elapsed) override
+    bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
-        auto progress = tvgexam::progress(elapsed, 3.0f, true);  //play time 3 secs.
+        tvgexam::Example::update(canvas, elapsed);
+
+        auto progress = tvg::toolkit::progress(elapsed, 3.0f, true);  // play time 3 secs.
         picture->scale((1.0f - progress) * 1.5f);
         picture->rotate(360 * progress);
         canvas->update();
@@ -58,12 +62,12 @@ struct UserExample : tvgexam::Example
     }
 };
 
-
 /************************************************************************/
 /* Entry Point                                                          */
 /************************************************************************/
 
 int main(int argc, char **argv)
 {
-    return tvgexam::main(new UserExample, argc, argv, true, 1024, 1024);
+    auto params = tvgexam::options(argc, argv, {1024, 1024});
+    return tvgexam::run(new UserExample(params), params);
 }
