@@ -20,7 +20,8 @@
  * SOFTWARE.
  */
 
-#include <memory>
+#include <algorithm>
+#include <cmath>
 #include <vector>
 #include "Example.h"
 
@@ -33,74 +34,50 @@
 
 struct UserExample : tvgexam::Example
 {
-    std::vector<std::unique_ptr<tvg::Animation>> animations;
-    std::string input = EXAMPLE_DIR "/lottie";
-    int counter = 0;
+    using tvgexam::Example::Example;
 
-    UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
+    struct Image
     {
-        tvgexam::filepath(params, input);  // -i <filepath>
-    }
-
-    void populate(const char* path) override
-    {
-        if (counter >= NUM_PER_ROW * NUM_PER_COL) return;
-
-        //ignore if not lottie.
-        const auto ext = path + std::strlen(path) - 4;
-        if (std::strcmp(ext, "json") && std::strcmp(ext, "lot")) return;
-
-        //Animation Controller
-        auto animation = tvg::Animation::gen();
-        auto picture = animation->picture();
-        picture->origin(0.5f, 0.5f);
-
-        if (!tvgexam::verify(picture->load(path))) return;
-
-        //image scaling preserving its aspect ratio
-        const auto& size = this->size();
-        auto cellSize = size.w / NUM_PER_ROW;
-        float w, h;
-        picture->size(&w, &h);
-        picture->scale((w > h) ? cellSize / w : cellSize / h);
-        picture->translate((counter % NUM_PER_ROW) * cellSize + cellSize / 2, (counter / NUM_PER_ROW) * (size.h / NUM_PER_COL) + cellSize / 2);
-
-        animations.push_back(std::unique_ptr<tvg::Animation>(animation));
-
-        std::cout << "Lottie: " << path << std::endl;
-
-        counter++;
-    }
+        tvg::Picture* picture;
+        float x, y;
+    };
+    std::vector<Image> images;
 
     bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
         tvgexam::Example::update(canvas, elapsed);
-        for (auto& animation : animations) {
-            auto progress = tvg::toolkit::progress(elapsed, animation->duration());
-            animation->frame(animation->totalFrame() * progress);
+        const auto offset = 10.0f * std::sin((elapsed % 2000) * (2.0f * 3.14159265f / 2000.0f));
+        for (auto& image : images) {
+            image.picture->translate(image.x + offset, image.y);
         }
-
         canvas->update();
-
         return true;
     }
 
     bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
     {
-        //The default font for fallback in case
-        tvg::Text::load(EXAMPLE_DIR"/font/PublicSans-Regular.ttf");
-
         //Background
         auto shape = tvg::Shape::gen();
         shape->appendRect(0, 0, size.w, size.h);
         shape->fill(75, 75, 75);
         canvas->add(shape);
 
-        scandir(input.c_str());
+        const auto cellWidth = size.w / float(NUM_PER_ROW);
+        const auto cellHeight = size.h / float(NUM_PER_COL);
 
-        //Run animation loop
-        for (auto& animation : animations) {
-            canvas->add(animation->picture());
+        for (int i = 0; i < NUM_PER_ROW * NUM_PER_COL; ++i) {
+            auto picture = tvg::Picture::gen();
+            if (!tvgexam::verify(picture->load(EXAMPLE_DIR "/image/test.jpg"))) return false;
+
+            float w, h;
+            picture->size(&w, &h);
+            picture->origin(0.5f, 0.5f);
+            picture->scale(std::min(cellWidth / w, cellHeight / h));
+            const auto x = (i % NUM_PER_ROW + 0.5f) * cellWidth;
+            const auto y = (i / NUM_PER_ROW + 0.5f) * cellHeight;
+            picture->translate(x, y);
+            canvas->add(picture);
+            images.push_back({picture, x, y});
         }
 
         return true;
