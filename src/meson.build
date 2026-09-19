@@ -56,6 +56,7 @@ source_file = [
     'MultiCanvas.cpp',
     'Opacity.cpp',
     'Path.cpp',
+    'PathBoolean.cpp',
     'Picture.cpp',
     'PictureData.cpp',
     'PictureJpg.cpp',
