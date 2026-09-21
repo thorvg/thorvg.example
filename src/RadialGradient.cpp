@@ -38,16 +38,16 @@ struct UserExample : tvgexam::Example
 
         //RadialGradient
         auto fill = tvg::RadialGradient::gen();
-        fill->radial(200, 200, 200, 200, 200, 0);   //cx, cy, r, fx, fy, fr
+        tvgexam::verify(fill->radial(200, 200, 200, 200, 200, 0));  // cx, cy, r, fx, fy, fr
 
         //Gradient Color Stops
         tvg::Fill::ColorStop colorStops[2];
         colorStops[0] = {0, 255, 255, 255, 255};
         colorStops[1] = {1, 0, 0, 0, 255};
 
-        fill->colorStops(colorStops, 2);
+        tvgexam::verify(fill->colorStops(colorStops, 2));
 
-        shape1->fill(fill);
+        tvgexam::verify(shape1->fill(fill));
         canvas->add(shape1);
 
         //Prepare Circle
@@ -56,7 +56,7 @@ struct UserExample : tvgexam::Example
 
         //RadialGradient
         auto fill2 = tvg::RadialGradient::gen();
-        fill2->radial(400, 400, 200, 400, 400, 0);   //cx, cy, r, fx, fy, fr
+        tvgexam::verify(fill2->radial(400, 400, 200, 400, 400, 0));  // cx, cy, r, fx, fy, fr
 
         //Gradient Color Stops
         tvg::Fill::ColorStop colorStops2[3];
@@ -64,9 +64,9 @@ struct UserExample : tvgexam::Example
         colorStops2[1] = {0.5, 255, 255, 0, 255};
         colorStops2[2] = {1, 255, 255, 255, 255};
 
-        fill2->colorStops(colorStops2, 3);
+        tvgexam::verify(fill2->colorStops(colorStops2, 3));
 
-        shape2->fill(fill2);
+        tvgexam::verify(shape2->fill(fill2));
         canvas->add(shape2);
 
         //Prepare Ellipse
@@ -75,7 +75,7 @@ struct UserExample : tvgexam::Example
 
         //RadialGradient
         auto fill3 = tvg::RadialGradient::gen();
-        fill3->radial(600, 600, 150, 700, 600, 20);   //cx, cy, r, fx, fy, fr
+        tvgexam::verify(fill3->radial(600, 600, 150, 700, 600, 20));  // cx, cy, r, fx, fy, fr
 
         //Gradient Color Stops
         tvg::Fill::ColorStop colorStops3[4];
@@ -84,9 +84,9 @@ struct UserExample : tvgexam::Example
         colorStops3[2] = {0.5, 200, 0, 200, 200};
         colorStops3[3] = {1, 255, 255, 255, 255};
 
-        fill3->colorStops(colorStops3, 4);
+        tvgexam::verify(fill3->colorStops(colorStops3, 4));
 
-        shape3->fill(fill3);
+        tvgexam::verify(shape3->fill(fill3));
         canvas->add(shape3);
 
         return true;
