@@ -49,7 +49,6 @@ source_file = [
     'Svg.cpp',
     'TextOtf.cpp',
     'TextTtf.cpp',
-    'TextEffects.cpp',
     'TextLayout.cpp',
     'TextLineWrap.cpp',
     'TextMetrics.cpp',
