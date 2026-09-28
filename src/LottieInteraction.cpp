@@ -69,7 +69,7 @@ struct UserExample : tvgexam::Example
         return degree;
     }
 
-    bool clickdown(tvg::Canvas* canvas, int32_t x, int32_t y) override
+    bool clickdown(tvg::Canvas* canvas, int32_t x, int32_t y, uint8_t button) override
     {
         down = {float(x), float(y)};
         prv = {float(x) - origin.x, float(y) - origin.y};
@@ -80,7 +80,7 @@ struct UserExample : tvgexam::Example
         return false;
     }
 
-    bool clickup(tvg::Canvas* canvas, int32_t x, int32_t y) override
+    bool clickup(tvg::Canvas* canvas, int32_t x, int32_t y, uint8_t button) override
     {
         pressed = false;
 
