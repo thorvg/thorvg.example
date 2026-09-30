@@ -26,6 +26,7 @@ source_file = [
     'LinearGradient.cpp',
     'Masking.cpp',
     'MaskingMethods.cpp',
+    'MotionBlur.cpp',
     'Opacity.cpp',
     'Path.cpp',
     'Picture.cpp',
