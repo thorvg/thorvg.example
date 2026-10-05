@@ -13,14 +13,14 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     steps:
     - uses: actions/checkout@v4
 
     - name: Install Packages
       run: |
         sudo apt-get update
-        sudo apt-get install meson ninja-build pkg-config libsdl2-dev
+        sudo apt-get install --no-install-recommends -y meson ninja-build pkg-config libsdl3-dev
 
     - name: Install ThorVG
       run: |

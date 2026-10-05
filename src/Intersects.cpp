@@ -115,11 +115,11 @@ struct UserExample : tvgexam::Example
         return true;
     }
 
-    bool motion(tvg::Canvas* canvas, int32_t x, int32_t y) override
+    bool motion(tvg::Canvas* canvas, float x, float y) override
     {
         //center align
-        mx = x - (mw / 2);
-        my = y - (mh / 2);
+        mx = static_cast<int>(x - float(mw) * 0.5f);
+        my = static_cast<int>(y - float(mh) * 0.5f);
 
         return false;
     }
