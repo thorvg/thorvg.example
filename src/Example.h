@@ -288,12 +288,12 @@ void summary(const Params& params)
               << ", threads=" << params.threads << '\n';
 }
 
-int run(Example* app, const Params& params)
+int run(Example* app, const Params& params, tvg::EngineOption op = tvg::EngineOption::Default)
 {
     summary(params);
 
     if (!verify(tvg::Initializer::init(params.threads))) return 1;
-    if (!verify(tvg::toolkit::run(app, params.engine))) return 1;
+    if (!verify(tvg::toolkit::run(app, params.engine, op))) return 1;
     if (!verify(tvg::Initializer::term())) return 1;
     return 0;
 }
