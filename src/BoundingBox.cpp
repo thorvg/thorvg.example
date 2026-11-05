@@ -132,8 +132,9 @@ struct UserExample : tvgexam::Example
             auto svg = tvg::Picture::gen();
             svg->load(EXAMPLE_DIR"/svg/tiger.svg");
             svg->scale(0.2f);
-            svg->translate(140, 215);
+            svg->translate(140.0f, 342.2f);
             svg->rotate(45);
+            svg->origin(0.5f, 0.5f);
             canvas->add(svg);
             bbox(canvas, svg);
 
@@ -142,10 +143,10 @@ struct UserExample : tvgexam::Example
         {
             auto scene = tvg::Scene::gen();
             scene->scale(0.3f);
-            scene->translate(280, 330);
-
             auto img = tvg::Picture::gen();
             img->load(EXAMPLE_DIR"/image/test.png");
+            scene->translate(356.7f, 406.7f);
+            img->origin(0.5f, 0.5f);
             scene->add(img);
 
             canvas->add(scene);
