@@ -208,6 +208,14 @@ struct UserExample : tvgexam::Example
         text14->translate(0, 670);
         canvas->add(text14);
 
+        auto text15 = tvg::Text::gen();
+        text15->font("DMSans");
+        text15->size(30);
+        text15->fill(255, 255, 255);
+        text15->text("Missing Glyphs: \xf3\xb0\x80\x80\xf3\xb0\x80\x80\xf3\xb0\x80\x80");
+        text15->translate(0, 780);
+        canvas->add(text15);
+
         return true;
     }
 };
