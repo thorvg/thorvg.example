@@ -53,6 +53,7 @@ source_file = [
     'TextTtf.cpp',
     'TextLayout.cpp',
     'TextLineWrap.cpp',
+    'TextKerning.cpp',
     'TextMetrics.cpp',
     'Transform.cpp',
     'TrimPath.cpp',

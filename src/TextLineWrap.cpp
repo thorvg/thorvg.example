@@ -117,6 +117,6 @@ struct UserExample : tvgexam::Example
 
 int main(int argc, char **argv)
 {
-    auto params = tvgexam::options(argc, argv, {800, 800});
+    auto params = tvgexam::options(argc, argv, {800, 720});
     return tvgexam::run(new UserExample(params), params);
 }
