@@ -120,12 +120,12 @@ struct UserExample : tvgexam::Example
             std::string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
             std::ifstream file(path, std::ios::binary);
             if (!file.is_open()) return false;
-            uint32_t* data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
+            auto data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
             file.read(reinterpret_cast<char*>(data), sizeof(uint32_t) * 200 * 300);
             file.close();
 
             auto picture1 = tvg::Picture::gen();
-            if (!tvgexam::verify(picture1->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(picture1->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             picture1->scale(0.8);
             picture1->translate(400, 450);
 
@@ -136,8 +136,6 @@ struct UserExample : tvgexam::Example
 
             canvas->add(picture1);
             canvas->add(picture2);
-
-            free(data);
         }
 
         //Duplicate Text

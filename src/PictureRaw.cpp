@@ -42,17 +42,17 @@ struct UserExample : tvgexam::Example
         std::string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
         std::ifstream file(path, std::ios::binary);
         if (!file.is_open()) return false;
-        auto data = (uint32_t*)malloc(sizeof(uint32_t) * (200*300));
+        auto data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
         file.read(reinterpret_cast<char *>(data), sizeof (uint32_t) * 200 * 300);
         file.close();
 
         auto picture = tvg::Picture::gen();
-        if (!tvgexam::verify(picture->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+        if (!tvgexam::verify(picture->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
         picture->translate(400, 250);
         canvas->add(picture);
 
         auto picture2 = tvg::Picture::gen();
-        if (!tvgexam::verify(picture2->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+        if (!tvgexam::verify(picture2->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
 
         picture2->translate(400, 200);
         picture2->rotate(47);
@@ -65,8 +65,6 @@ struct UserExample : tvgexam::Example
         picture2->clip(circle);
 
         canvas->add(picture2);
-
-        free(data);
 
         return true;
     }

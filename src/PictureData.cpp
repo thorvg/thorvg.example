@@ -54,7 +54,7 @@ struct UserExample : tvgexam::Example
         picture1->scale(0.5f);
 
         // load the picture raw image data
-        if (!tvgexam::verify(picture1->load((uint32_t*)buffer, 800, 800, tvg::ColorSpace::ABGR8888))) return false;
+        if (!tvgexam::verify(picture1->load((uint32_t*)buffer, 800, 800, 800, tvg::ColorSpace::ABGR8888, true))) return false;
 
         canvas->add(picture1);
 
@@ -64,7 +64,7 @@ struct UserExample : tvgexam::Example
         picture2->scale(0.5f);
 
         // load the picture raw image data
-        if (!tvgexam::verify(picture2->load((uint32_t*)buffer, 800, 800, tvg::ColorSpace::ABGR8888))) return false;
+        if (!tvgexam::verify(picture2->load((uint32_t*)buffer, 800, 800, 800, tvg::ColorSpace::ABGR8888, true))) return false;
 
         canvas->add(picture2);
 
@@ -78,7 +78,7 @@ struct UserExample : tvgexam::Example
         generate();
 
         // only reload the picture1 image
-        if (!tvgexam::verify(picture1->load((uint32_t*)buffer, 800, 800, tvg::ColorSpace::ABGR8888))) return false;
+        if (!tvgexam::verify(picture1->load((uint32_t*)buffer, 800, 800, 800, tvg::ColorSpace::ABGR8888, true))) return false;
 
         canvas->update();
 
