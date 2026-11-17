@@ -36,7 +36,7 @@ struct UserExample : tvgexam::Example
         //Image
         std::ifstream file(EXAMPLE_DIR"/image/rawimage_200x300.raw", std::ios::binary);
         if (!file.is_open()) return false;
-        auto data = (uint32_t*) malloc(sizeof(uint32_t) * (200 * 300));
+        auto data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
         file.read(reinterpret_cast<char*>(data), sizeof (uint32_t) * 200 * 300);
         file.close();
 
@@ -103,7 +103,7 @@ struct UserExample : tvgexam::Example
             canvas->add(star);
 
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->translate(375.0f, 300.0f);
             image->scale(0.75f);
 
@@ -187,7 +187,7 @@ struct UserExample : tvgexam::Example
             canvas->add(star);
 
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ABGR8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->scale(0.75f);
             image->translate(975.0f, 300.0f);
 
@@ -264,7 +264,7 @@ struct UserExample : tvgexam::Example
             canvas->add(star);
 
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->translate(375.0f, 825.0f);
             image->scale(0.75f);
 
@@ -335,7 +335,7 @@ struct UserExample : tvgexam::Example
             canvas->add(star);
 
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->translate(975.0f, 825.0f);
             image->scale(0.75f);
 
@@ -352,7 +352,6 @@ struct UserExample : tvgexam::Example
             canvas->add(image);
         }
 
-        free(data);
 
         return true;
     }

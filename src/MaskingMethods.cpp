@@ -36,7 +36,7 @@ struct UserExample : tvgexam::Example
         //Image source
         std::ifstream file(EXAMPLE_DIR"/image/rawimage_200x300.raw", std::ios::binary);
         if (!file.is_open()) return false;
-        auto data = (uint32_t*) malloc(sizeof(uint32_t) * (200 * 300));
+        auto data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
         file.read(reinterpret_cast<char*>(data), sizeof (uint32_t) * 200 * 300);
         file.close();
 
@@ -340,7 +340,7 @@ struct UserExample : tvgexam::Example
         {
             //Transformed Image + Shape Mask Add
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->translate(150, 650);
             image->scale(0.5f);
             image->rotate(45);
@@ -358,7 +358,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Subtract
             auto image2 = tvg::Picture::gen();
-            if (!tvgexam::verify(image2->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image2->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image2->translate(400, 650);
             image2->scale(0.5f);
             image2->rotate(45);
@@ -376,7 +376,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Intersect
             auto image3 = tvg::Picture::gen();
-            if (!tvgexam::verify(image3->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image3->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image3->translate(650, 650);
             image3->scale(0.5f);
             image3->rotate(45);
@@ -394,7 +394,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Difference
             auto image4 = tvg::Picture::gen();
-            if (!tvgexam::verify(image4->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image4->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image4->translate(900, 650);
             image4->scale(0.5f);
             image4->rotate(45);
@@ -412,7 +412,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Lighten
             auto image5 = tvg::Picture::gen();
-            if (!tvgexam::verify(image5->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image5->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image5->translate(1150, 650);
             image5->scale(0.5f);
             image5->rotate(45);
@@ -430,7 +430,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Darken
             auto image6 = tvg::Picture::gen();
-            if (!tvgexam::verify(image6->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image6->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image6->translate(1400, 650);
             image6->scale(0.5f);
             image6->rotate(45);
@@ -449,7 +449,7 @@ struct UserExample : tvgexam::Example
         {
             //Transformed Image + Shape Mask Add
             auto image = tvg::Picture::gen();
-            if (!tvgexam::verify(image->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image->translate(150, 850);
             image->scale(0.5f);
             image->rotate(45);
@@ -467,7 +467,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Subtract
             auto image2 = tvg::Picture::gen();
-            if (!tvgexam::verify(image2->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image2->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image2->translate(400, 850);
             image2->scale(0.5f);
             image2->rotate(45);
@@ -485,7 +485,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Intersect
             auto image3 = tvg::Picture::gen();
-            if (!tvgexam::verify(image3->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image3->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image3->translate(650, 850);
             image3->scale(0.5f);
             image3->rotate(45);
@@ -503,7 +503,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Difference
             auto image4 = tvg::Picture::gen();
-            if (!tvgexam::verify(image4->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image4->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image4->translate(900, 850);
             image4->scale(0.5f);
             image4->rotate(45);
@@ -521,7 +521,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Lighten
             auto image5 = tvg::Picture::gen();
-            if (!tvgexam::verify(image5->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image5->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image5->translate(1150, 850);
             image5->scale(0.5f);
             image5->rotate(45);
@@ -539,7 +539,7 @@ struct UserExample : tvgexam::Example
 
             //Transformed Image + Shape Mask Darken
             auto image6 = tvg::Picture::gen();
-            if (!tvgexam::verify(image6->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true))) return false;
+            if (!tvgexam::verify(image6->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888))) return false;
             image6->translate(1400, 850);
             image6->scale(0.5f);
             image6->rotate(45);
@@ -555,7 +555,7 @@ struct UserExample : tvgexam::Example
             image6->mask(mask6, tvg::MaskMethod::InvAlpha);
             canvas->add(image6);
         }
-        free(data);
+
         return true;
     }
 };

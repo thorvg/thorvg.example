@@ -98,7 +98,7 @@ struct UserExample : tvgexam::Example
         //image
         {
             auto bottom = tvg::Picture::gen();
-            bottom->load(data, 200, 300, tvg::ColorSpace::ARGB8888, true);
+            bottom->load(data, 200, 200, 300, tvg::ColorSpace::ARGB8888);
             bottom->translate(475 + x, 25.0f + y);
             bottom->scale(0.35f);
             canvas->add(bottom);
@@ -148,7 +148,7 @@ struct UserExample : tvgexam::Example
         std::string path(EXAMPLE_DIR"/image/rawimage_200x300.raw");
         std::ifstream file(path, std::ios::binary);
         if (!file.is_open()) return false;
-        auto data = (uint32_t*)malloc(sizeof(uint32_t) * (200*300));
+        auto data = (uint32_t*)malloc(sizeof(uint32_t) * 200 * 300);
         file.read(reinterpret_cast<char *>(data), sizeof (uint32_t) * 200 * 300);
         file.close();
 
@@ -171,7 +171,6 @@ struct UserExample : tvgexam::Example
         blender(canvas, "Luminosity", tvg::BlendMethod::Luminosity, 900.0f, 900.0f, data);
         blender(canvas, "Add", tvg::BlendMethod::Add, 900.0f, 1050.0f, data);
 
-        free(data);
 
         return true;
     }
