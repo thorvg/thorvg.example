@@ -35,7 +35,7 @@ struct UserExample : tvgexam::Example
     tvg::Text* text;
     std::string data = "Type here: ";
     tvg::Shape* cursor;
-    tvg::Point pos;                //cursor position
+    tvg::Point pos{};                //cursor position
     size_t lastElapsed = 0;
     float endPos[MAX_LINE];        //each line end position
     uint32_t curLine = 1;          //default line number
@@ -59,30 +59,36 @@ struct UserExample : tvgexam::Example
 
         if (tvgexam::Example::lshift) input -= 32;  // capital character
 
-        tvg::GlyphMetrics glyphMetric;
+        tvg::GlyphMetrics glyphMetric{};
         auto pos = this->pos;
 
         // backspace
         if (input == '\b') {
             if (data.empty()) return false;
-            auto last = data.back();
-            if (tvgexam::verify(text->metrics(&last, glyphMetric))) {
-                data.resize(data.size() - 1);    // revert the character
-                pos.x -= glyphMetric.advance;    // cursor x position
+            if (data.back() != '\n') {
+                auto count = text->length();
+                if (!count || !tvgexam::verify(text->metrics(count - 1, glyphMetric))) return false;
+                pos.x -= glyphMetric.advance;
             }
+            data.resize(data.size() - 1);
+            text->text(data.c_str());
         // feed line
         } else if (input == '\r') {
             data += '\n';
+            text->text(data.c_str());
             endPos[curLine - 1] = pos.x;
         // append a character
         } else {
-            if (tvgexam::verify(text->metrics(&input, glyphMetric))) {
-                data += input;                    // append the character
-                pos.x += glyphMetric.advance;     // cursor x position
+            data += input;
+            text->text(data.c_str());
+            auto count = text->length();
+            if (!count || !tvgexam::verify(text->metrics(count - 1, glyphMetric))) {
+                data.resize(data.size() - 1);
+                text->text(data.c_str());
+                return false;
             }
+            pos.x += glyphMetric.advance;
         }
-
-        text->text(data.c_str());
 
         // get the line count
         auto newLine = text->lines();
@@ -156,15 +162,14 @@ struct UserExample : tvgexam::Example
         group->add(text);
 
         // text cursor
-        tvg::GlyphMetrics glyphMetric;
+        tvg::GlyphMetrics glyphMetric{};
 
         // figure out the cursor x position
-        auto p = text->text();
-        while (*p != '\0') {
-            if (tvgexam::verify(text->metrics(p, glyphMetric))) {
+        auto count = text->length();
+        for (uint32_t idx = 0; idx < count; ++idx) {
+            if (tvgexam::verify(text->metrics(idx, glyphMetric))) {
                 pos.x += glyphMetric.advance;
             }
-            p++;
         }
 
         // figure out the cursor y position
