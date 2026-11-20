@@ -23,6 +23,17 @@
 #include <memory>
 #include "Example.h"
 
+// -f <frame>
+static void frame(const tvgexam::Params& params, float& out)
+{
+    for (int i = 1; i + 1 < params.argc; ++i) {
+        if (std::strcmp(params.argv[i], "-f") == 0) {
+            out = std::atof(params.argv[i + 1]);
+            break;
+        }
+    }
+}
+
 /************************************************************************/
 /* ThorVG Drawing Contents                                              */
 /************************************************************************/
@@ -31,10 +42,12 @@ struct UserExample : tvgexam::Example
 {
     std::unique_ptr<tvg::Animation> animation;
     std::string input = EXAMPLE_DIR "/lottie/sample.json";
+    float frame = -1.0f;
 
     UserExample(const tvgexam::Params& params) : tvgexam::Example(params)
     {
         tvgexam::filepath(params, input);   // -i <filepath>
+        ::frame(params, frame);   // -f <frame>
     }
 
     bool content(tvg::Canvas* canvas, const tvg::toolkit::App::Size& size) override
@@ -56,6 +69,14 @@ struct UserExample : tvgexam::Example
 
         if (!tvgexam::verify(picture->load(input.c_str()))) return false;
 
+        if (frame >= 0.0f) {
+            if (frame >= animation->totalFrame()) {
+                std::cerr << "Frame must be less than " << animation->totalFrame() << std::endl;
+                return false;
+            }
+            if (!tvgexam::verify(animation->frame(frame))) return false;
+        }
+
         //image scaling preserving its aspect ratio
         float w2, h2;
         picture->size(&w2, &h2);
@@ -71,6 +92,7 @@ struct UserExample : tvgexam::Example
     bool update(tvg::Canvas* canvas, size_t elapsed) override
     {
         tvgexam::Example::update(canvas, elapsed);
+        if (frame >= 0.0f) return false;
         auto progress = tvg::toolkit::progress(elapsed, animation->duration());
 
         //Update animation frame only when it's changed
